@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--This is a configuration file for the integration of a tools into Galaxy (https://galaxyproject.org/). This file was automatically generated using CTD2Galaxy.-->
+  <!--Proposed Tool Section: [Utilities]-->
+  <tool id="CVInspector" name="CVInspector" version="2.0.0">
+    <description>A tool for visualization and validation of PSI mapping and CV files.</description>
+    <macros>
+      <token name="@EXECUTABLE@">CVInspector</token>
+      <import>macros.xml</import>
+    </macros>
+    <expand macro="references"/>
+    <expand macro="stdio"/>
+    <expand macro="requirements"/>
+    <command>CVInspector
+
+-cv_files
+  #for token in $param_cv_files:
+    $token
+  #end for
+
+#if $rep_param_cv_names:
+-cv_names
+  #for token in $rep_param_cv_names:
+    #if &quot; &quot; in str(token):
+      &quot;$token.param_cv_names&quot;
+    #else
+      $token.param_cv_names
+    #end if
+  #end for
+#end if
+#if $param_mapping_file:
+  -mapping_file $param_mapping_file
+#end if
+
+#if $rep_param_ignore_cv:
+-ignore_cv
+  #for token in $rep_param_ignore_cv:
+    #if &quot; &quot; in str(token):
+      &quot;$token.param_ignore_cv&quot;
+    #else
+      $token.param_ignore_cv
+    #end if
+  #end for
+#end if
+#if $param_html:
+  -html $param_html
+#end if
+-threads \${GALAXY_SLOTS:-24}
+#if $adv_opts.adv_opts_selector=='advanced':
+    #if $adv_opts.param_force:
+  -force
+#end if
+#end if
+</command>
+    <inputs>
+      <param format="" help="(-cv_files) " label="List of ontology files in OBO format" multiple="true" name="param_cv_files" optional="False" size="30" type="data">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <repeat min="1" name="rep_param_cv_names" title="param_cv_names">
+        <param help="(-cv_names) " label="List of identifiers (one for each ontology file)" name="param_cv_names" size="30" type="text">
+          <sanitizer>
+            <valid initial="string.printable">
+              <remove value="'"/>
+              <remove value="&quot;"/>
+            </valid>
+          </sanitizer>
+        </param>
+      </repeat>
+      <param format="xml" help="(-mapping_file) " label="Mapping file in CVMapping (XML) format" name="param_mapping_file" optional="True" type="data"/>
+      <repeat max="1" min="0" name="rep_param_ignore_cv" title="param_ignore_cv">
+        <param help="(-ignore_cv) " label="A list of CV identifiers which should be ignored" name="param_ignore_cv" size="30" type="text" value="UO PATO BTO">
+          <sanitizer>
+            <valid initial="string.printable">
+              <remove value="'"/>
+              <remove value="&quot;"/>
+            </valid>
+          </sanitizer>
+        </param>
+      </repeat>
+      <expand macro="advanced_options">
+        <param checked="false" falsevalue="" help="(-force) " label="Overwrite tool specific checks" name="param_force" optional="True" truevalue="-force" type="boolean"/>
+      </expand>
+    </inputs>
+    <outputs>
+      <data format="html" name="param_html"/>
+    </outputs>
+    <help>A tool for visualization and validation of PSI mapping and CV files.
+
+
+For more information, visit http://ftp.mi.fu-berlin.de/OpenMS/release-documentation/html/UTILS_CVInspector.html</help>
+  </tool>

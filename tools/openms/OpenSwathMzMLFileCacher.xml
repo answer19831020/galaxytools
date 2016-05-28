@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--This is a configuration file for the integration of a tools into Galaxy (https://galaxyproject.org/). This file was automatically generated using CTD2Galaxy.-->
+  <!--Proposed Tool Section: []-->
+  <tool id="OpenSwathMzMLFileCacher" name="OpenSwathMzMLFileCacher" version="2.0.0">
+    <description>This tool caches the spectra and chromatogram data of an mzML to disk.</description>
+    <macros>
+      <token name="@EXECUTABLE@">OpenSwathMzMLFileCacher</token>
+      <import>macros.xml</import>
+    </macros>
+    <expand macro="references"/>
+    <expand macro="stdio"/>
+    <expand macro="requirements"/>
+    <command>OpenSwathMzMLFileCacher
+
+#if $param_in:
+  -in $param_in
+#end if
+#if $param_out:
+  -out $param_out
+#end if
+#if $param_convert_back:
+  -convert_back
+#end if
+-threads \${GALAXY_SLOTS:-24}
+#if $adv_opts.adv_opts_selector=='advanced':
+    #if $adv_opts.param_force:
+  -force
+#end if
+#end if
+</command>
+    <inputs>
+      <param format="mzml" help="(-in) " label="transition file ('csv')" name="param_in" optional="False" type="data"/>
+      <param checked="false" falsevalue="" help="(-convert_back) " label="Convert back to mzML" name="param_convert_back" optional="True" truevalue="-convert_back" type="boolean"/>
+      <expand macro="advanced_options">
+        <param checked="false" falsevalue="" help="(-force) " label="Overwrite tool specific checks" name="param_force" optional="True" truevalue="-force" type="boolean"/>
+      </expand>
+    </inputs>
+    <outputs>
+      <data format="data" name="param_out"/>
+    </outputs>
+    <help>This tool caches the spectra and chromatogram data of an mzML to disk.
+
+
+For more information, visit </help>
+  </tool>

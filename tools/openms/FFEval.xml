@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--This is a configuration file for the integration of a tools into Galaxy (https://galaxyproject.org/). This file was automatically generated using CTD2Galaxy.-->
+  <!--Proposed Tool Section: [Utilities]-->
+  <tool id="FFEval" name="FFEval" version="2.0.0">
+    <description>Evaluation tool for feature detection algorithms.</description>
+    <macros>
+      <token name="@EXECUTABLE@">FFEval</token>
+      <import>macros.xml</import>
+    </macros>
+    <expand macro="references"/>
+    <expand macro="stdio"/>
+    <expand macro="requirements"/>
+    <command>FFEval
+
+#if $param_in:
+  -in $param_in
+#end if
+#if $param_truth:
+  -truth $param_truth
+#end if
+#if $param_rt_tol:
+  -rt_tol $param_rt_tol
+#end if
+#if $param_rt_tol_abs:
+  -rt_tol_abs $param_rt_tol_abs
+#end if
+#if $param_mz_tol:
+  -mz_tol $param_mz_tol
+#end if
+#if $param_out:
+  -out $param_out
+#end if
+#if $param_abort_reasons:
+  -abort_reasons $param_abort_reasons
+#end if
+#if $param_out_roc:
+  -out_roc $param_out_roc
+#end if
+-threads \${GALAXY_SLOTS:-24}
+#if $adv_opts.adv_opts_selector=='advanced':
+    #if $adv_opts.param_force:
+  -force
+#end if
+#end if
+</command>
+    <inputs>
+      <param format="xml" help="(-in) " label="Feature input file, which contains the data to be tested against the truth file" name="param_in" optional="False" type="data"/>
+      <param format="xml" help="(-truth) " label="Truth feature file that defines what features should be found" name="param_truth" optional="False" type="data"/>
+      <param help="(-rt_tol) " label="Allowed tolerance of RT relative to average feature RT span" min="0.0" name="param_rt_tol" optional="True" type="float" value="0.3"/>
+      <param help="(-rt_tol_abs) " label="Allowed absolute tolerance of RT (overwrites 'rt_tol' if set above zero)" min="-1.0" name="param_rt_tol_abs" optional="True" type="float" value="-1.0"/>
+      <param help="(-mz_tol) " label="Allowed tolerance in m/z (is divided by charge)" min="0.0" name="param_mz_tol" optional="True" type="float" value="0.25"/>
+      <param format="xml" help="(-abort_reasons) " label="Feature file containing seeds with abort reasons" name="param_abort_reasons" optional="True" type="data"/>
+      <expand macro="advanced_options">
+        <param checked="false" falsevalue="" help="(-force) " label="Overwrite tool specific checks" name="param_force" optional="True" truevalue="-force" type="boolean"/>
+      </expand>
+    </inputs>
+    <outputs>
+      <data format="xml" name="param_out"/>
+      <data format="tabular" name="param_out_roc"/>
+    </outputs>
+    <help>Evaluation tool for feature detection algorithms.
+
+
+For more information, visit http://ftp.mi.fu-berlin.de/OpenMS/release-documentation/html/UTILS_FFEval.html</help>
+  </tool>

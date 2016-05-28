@@ -8,6 +8,7 @@
         <requirement type="package" version="2.3.2">openbabel</requirement>
     </requirements>
     <command>
+<![CDATA[
 ## The command is a Cheetah template which allows some Python based syntax.
 ## Lines starting hash hash are comments. Galaxy will turn newlines into spaces
 
@@ -16,17 +17,17 @@
     #if $format == "fs":
         ## For the fastsearch index we need to copy the original molecule files to the composite datatype of obfs.
         ## Because openbabel likes file extensions, we give the molecule file a proper file extension.
-        mkdir $outfile.extra_files_path;
-        cp "${infile}" ${os.path.join($outfile.extra_files_path, 'molecule.%s' % $infile.ext )};
+        mkdir $outfile.files_path;
+        cp "${infile}" ${os.path.join($outfile.files_path, 'molecule.%s' % $infile.ext )};
     #end if
 
 obabel -i "${infile.ext}"
 
     #if $format == "fs":
         ## the fs filetype need his own symlink path, all others can take the original ones
-        ${os.path.join($outfile.extra_files_path, 'molecule.%s' % $infile.ext )}
+        ${os.path.join($outfile.files_path, 'molecule.%s' % $infile.ext )}
         -o "$format" -e
-        -O ${os.path.join($outfile.extra_files_path,'molecule.fs')}
+        -O ${os.path.join($outfile.files_path,'molecule.fs')}
         #if int($oformat.fs_fold) > 0:
             -xN$oformat.fs_fold
         #end if
@@ -121,11 +122,12 @@ obabel -i "${infile.ext}"
     $remove_h
     $dative_bonds
 
-    #if int($ph) >= 0:
+    #if float($ph) >= 0:
         -p $ph
     #end if
 
-    2>&#38;1
+    2>&1
+]]>
     </command>
     <inputs>
         <param name="infile" type="data" format="sdf,mol2,cml,inchi,smi" label="Select input file with molecules"/>
@@ -145,7 +147,7 @@ obabel -i "${infile.ext}"
                 <option value="cdxml">ChemDraw CDXML format</option>
                 <option value="cht">Chemtool format</option>
                 <option value="cif">Crystallographic Information File</option>
-                <option value="cml">Chemical Markup Language</option>
+                <option value="cml">Chemical Markup Language (CML)</option>
                 <option value="cmlr">CML Reaction format</option>
                 <option value="com">Gaussian 98/03 Cartesian Input</option>
                 <option value="copy">Copies raw text</option>
@@ -262,7 +264,7 @@ obabel -i "${infile.ext}"
                     <option value="-xfFP4">FP4</option>
                     <option value="-xfMACCS">MACCS</option>
                 </param>
-                <param name="fpt_fold" type="integer" value="0" size="20" label="Fold fingerprint to the number of specifed bits (32, 64, 128, etc.)" help="Use zero for default">
+                <param name="fpt_fold" type="integer" value="0" label="Fold fingerprint to the number of specifed bits (32, 64, 128, etc.)" help="Use zero for default">
                    <validator type="in_range" min="0" />
                 </param>
                 <param name="fpt_hex_multiple" type="boolean" label="hex output when multiple molecules (-xh)" truevalue="-xh" falsevalue="" checked="false" />
@@ -278,7 +280,7 @@ obabel -i "${infile.ext}"
                     <option value="-xfFP4">FP4</option>
                     <option value="-xfMACCS">MACCS</option>
                 </param>
-                <param name="fs_fold" type="integer" value="0" size="20" label="Fold fingerprint to the number of specifed bits (32, 64, 128, etc.)" help="Use zero for default">
+                <param name="fs_fold" type="integer" value="0" label="Fold fingerprint to the number of specifed bits (32, 64, 128, etc.)" help="Use zero for default">
                    <validator type="in_range" min="0" />
                 </param>
             </when>
@@ -375,10 +377,10 @@ obabel -i "${infile.ext}"
 
         <!-- Options for all formats.-->
         <param name="remove_h" type="boolean" label="Delete hydrogen atoms, make all hydrogen implicit (-d)" truevalue="-d" falsevalue="" />
-        <param name="ph" size="5" type="float" value="-1" label="Add hydrogens appropriate for pH (-p)" help="-1 means deactivated"/>
+        <param name="ph" type="float" value="-1" label="Add hydrogens appropriate for pH (-p)" help="-1 means deactivated"/>
         <param name="dative_bonds" type="boolean" label="Convert dative bonds, e.g. [N+]([O-])=O to N(=O)=O (-b)" truevalue="-b" falsevalue="" />
 
-        <param name="appendtotitle" type="text" value="" size="20" label="Append the specified text after each molecule title"/>
+        <param name="appendtotitle" type="text" value="" label="Append the specified text after each molecule title"/>
 
         <!-- Uniqueness -->
         <conditional name="unique">
@@ -424,13 +426,14 @@ obabel -i "${infile.ext}"
         </data>
     </outputs>
     <help>
+<![CDATA[
 
 .. class:: infomark
 
 **What this tool does**
 
-The compound converter joins several `Open Babel`_ command prompt converters in an easy to use tool. It converts various chemistry and moleculare modeling data files. 
-The output format can be specified as well as several parameters. Some parameters are available for all tools (e.g. protonation state and pH) 
+The compound converter joins several `Open Babel`_ command prompt converters in an easy to use tool. It converts various chemistry and moleculare modeling data files.
+The output format can be specified as well as several parameters. Some parameters are available for all tools (e.g. protonation state and pH)
 others are specific for a given output format (e.g. exclude isotopes for conversion to canSMI).
 
 -----
@@ -456,5 +459,6 @@ N M O'Boyle, M Banck, C A James, C Morley, T Vandermeersch, and G R Hutchison - 
 .. _`Open Babel`: http://openbabel.org/wiki/Main_Page
 
 
+]]>
   </help>
 </tool>

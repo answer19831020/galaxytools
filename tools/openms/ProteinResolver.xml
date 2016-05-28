@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--This is a configuration file for the integration of a tools into Galaxy (https://galaxyproject.org/). This file was automatically generated using CTD2Galaxy.-->
+  <!--Proposed Tool Section: [Quantitation]-->
+  <tool id="ProteinResolver" name="ProteinResolver" version="2.0.0">
+    <description>protein inference</description>
+    <macros>
+      <token name="@EXECUTABLE@">ProteinResolver</token>
+      <import>macros.xml</import>
+    </macros>
+    <expand macro="references"/>
+    <expand macro="stdio"/>
+    <expand macro="requirements"/>
+    <command>ProteinResolver
+
+#if $param_fasta:
+  -fasta $param_fasta
+#end if
+-in
+  #for token in $param_in:
+    $token
+  #end for
+#if $param_in_path:
+  -in_path     &quot;$param_in_path&quot;
+#end if
+#if $param_design:
+  -design $param_design
+#end if
+#if $param_protein_groups:
+  -protein_groups $param_protein_groups
+#end if
+#if $param_peptide_table:
+  -peptide_table $param_peptide_table
+#end if
+#if $param_protein_table:
+  -protein_table $param_protein_table
+#end if
+#if $param_additional_info:
+  -additional_info $param_additional_info
+#end if
+-threads \${GALAXY_SLOTS:-24}
+#if $param_resolver_missed_cleavages:
+  -resolver:missed_cleavages $param_resolver_missed_cleavages
+#end if
+#if $param_resolver_min_length:
+  -resolver:min_length $param_resolver_min_length
+#end if
+#if $param_resolver_enzyme:
+  -resolver:enzyme     &quot;$param_resolver_enzyme&quot;
+#end if
+#if $param_designer_experiment:
+  -designer:experiment     &quot;$param_designer_experiment&quot;
+#end if
+#if $param_designer_file:
+  -designer:file     &quot;$param_designer_file&quot;
+#end if
+#if $param_designer_separator:
+  -designer:separator
+  #if &quot; &quot; in str($param_designer_separator):
+    &quot;$param_designer_separator&quot;
+  #else
+    $param_designer_separator
+  #end if
+#end if
+#if $adv_opts.adv_opts_selector=='advanced':
+    #if $adv_opts.param_force:
+  -force
+#end if
+#end if
+</command>
+    <inputs>
+      <param format="fasta" help="(-fasta) " label="Input database file" name="param_fasta" optional="False" type="data"/>
+      <param format="xml,consensusxml" help="(-in) " label="Input file(s) holding experimental data" multiple="true" name="param_in" optional="True" size="30" type="data">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-in_path) Ignored if 'in' is given" label="Path to idXMLs or consensusXMLs files" name="param_in_path" size="30" type="text">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param format="txt" help="(-design) See documentation for specific format requirements" label="Text file containing the experimental design" name="param_design" optional="True" type="data"/>
+      <param help="(-missed_cleavages) " label="Number of allowed missed cleavages" min="0" name="param_resolver_missed_cleavages" optional="True" type="integer" value="2"/>
+      <param help="(-min_length) " label="Minimum length of peptide" min="1" name="param_resolver_min_length" optional="True" type="integer" value="6"/>
+      <param help="(-enzyme) " label="Digestion enzyme" name="param_resolver_enzyme" size="30" type="text" value="Trypsin">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-experiment) " label="Identifier for the experimental design" name="param_designer_experiment" size="30" type="text" value="ExperimentalSetting">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-file) " label="Identifier for the file name" name="param_designer_file" size="30" type="text" value="File">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-separator) " label="Separator, which should be used to split a row into columns" name="param_designer_separator" optional="True" type="select" value="tab">
+        <option value="tab">tab</option>
+        <option value="semi-colon">semi-colon</option>
+        <option value="comma">comma</option>
+        <option value="whitespace">whitespace</option>
+      </param>
+      <expand macro="advanced_options">
+        <param checked="false" falsevalue="" help="(-force) " label="Overwrite tool specific checks" name="param_force" optional="True" truevalue="-force" type="boolean"/>
+      </expand>
+    </inputs>
+    <outputs>
+      <data format="tabular" name="param_protein_groups"/>
+      <data format="tabular" name="param_peptide_table"/>
+      <data format="tabular" name="param_protein_table"/>
+      <data format="tabular" name="param_additional_info"/>
+    </outputs>
+    <help>protein inference
+
+
+For more information, visit http://ftp.mi.fu-berlin.de/OpenMS/release-documentation/html/TOPP_ProteinResolver.html</help>
+  </tool>

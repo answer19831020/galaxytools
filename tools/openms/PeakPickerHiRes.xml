@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--This is a configuration file for the integration of a tools into Galaxy (https://galaxyproject.org/). This file was automatically generated using CTD2Galaxy.-->
+  <!--Proposed Tool Section: [Signal processing and preprocessing]-->
+  <tool id="PeakPickerHiRes" name="PeakPickerHiRes" version="2.0.0">
+    <description>Finds mass spectrometric peaks in profile mass spectra.</description>
+    <macros>
+      <token name="@EXECUTABLE@">PeakPickerHiRes</token>
+      <import>macros.xml</import>
+    </macros>
+    <expand macro="references"/>
+    <expand macro="stdio"/>
+    <expand macro="requirements"/>
+    <command>PeakPickerHiRes
+
+#if $param_in:
+  -in $param_in
+#end if
+#if $param_out:
+  -out $param_out
+#end if
+-threads \${GALAXY_SLOTS:-24}
+#if $param_algorithm_signal_to_noise:
+  -algorithm:signal_to_noise $param_algorithm_signal_to_noise
+#end if
+
+#if $rep_param_algorithm_ms_levels:
+-algorithm:ms_levels
+  #for token in $rep_param_algorithm_ms_levels:
+    #if &quot; &quot; in str(token):
+      &quot;$token.param_algorithm_ms_levels&quot;
+    #else
+      $token.param_algorithm_ms_levels
+    #end if
+  #end for
+#end if
+#if $param_algorithm_SignalToNoise_win_len:
+  -algorithm:SignalToNoise:win_len $param_algorithm_SignalToNoise_win_len
+#end if
+#if $param_algorithm_SignalToNoise_bin_count:
+  -algorithm:SignalToNoise:bin_count $param_algorithm_SignalToNoise_bin_count
+#end if
+#if $param_algorithm_SignalToNoise_min_required_elements:
+  -algorithm:SignalToNoise:min_required_elements $param_algorithm_SignalToNoise_min_required_elements
+#end if
+#if $param_algorithm_SignalToNoise_write_log_messages:
+  -algorithm:SignalToNoise:write_log_messages
+#end if
+#if $adv_opts.adv_opts_selector=='advanced':
+    #if $adv_opts.param_processOption:
+  -processOption
+  #if &quot; &quot; in str($adv_opts.param_processOption):
+    &quot;$adv_opts.param_processOption&quot;
+  #else
+    $adv_opts.param_processOption
+  #end if
+#end if
+    #if $adv_opts.param_force:
+  -force
+#end if
+    #if $adv_opts.param_algorithm_spacing_difference_gap:
+  -algorithm:spacing_difference_gap $adv_opts.param_algorithm_spacing_difference_gap
+#end if
+    #if $adv_opts.param_algorithm_spacing_difference:
+  -algorithm:spacing_difference $adv_opts.param_algorithm_spacing_difference
+#end if
+    #if $adv_opts.param_algorithm_missing:
+  -algorithm:missing $adv_opts.param_algorithm_missing
+#end if
+    #if $adv_opts.param_algorithm_SignalToNoise_max_intensity:
+  -algorithm:SignalToNoise:max_intensity $adv_opts.param_algorithm_SignalToNoise_max_intensity
+#end if
+    #if $adv_opts.param_algorithm_SignalToNoise_auto_max_stdev_factor:
+  -algorithm:SignalToNoise:auto_max_stdev_factor $adv_opts.param_algorithm_SignalToNoise_auto_max_stdev_factor
+#end if
+    #if $adv_opts.param_algorithm_SignalToNoise_auto_max_percentile:
+  -algorithm:SignalToNoise:auto_max_percentile $adv_opts.param_algorithm_SignalToNoise_auto_max_percentile
+#end if
+    #if $adv_opts.param_algorithm_SignalToNoise_auto_mode:
+  -algorithm:SignalToNoise:auto_mode $adv_opts.param_algorithm_SignalToNoise_auto_mode
+#end if
+    #if $adv_opts.param_algorithm_SignalToNoise_noise_for_empty_window:
+  -algorithm:SignalToNoise:noise_for_empty_window $adv_opts.param_algorithm_SignalToNoise_noise_for_empty_window
+#end if
+#end if
+</command>
+    <inputs>
+      <param format="mzml" help="(-in) " label="input profile data file" name="param_in" optional="False" type="data"/>
+      <param help="(-signal_to_noise) " label="Minimal signal-to-noise ratio for a peak to be picked (0.0 disables SNT estimation!)" min="0.0" name="param_algorithm_signal_to_noise" optional="True" type="float" value="1.0"/>
+      <repeat max="1" min="0" name="rep_param_algorithm_ms_levels" title="param_algorithm_ms_levels">
+        <param help="(-ms_levels) Other scans are copied to the output without changes" label="List of MS levels for which the peak picking is applied" min="1" name="param_algorithm_ms_levels" optional="True" size="30" type="text" value="1 2">
+          <sanitizer>
+            <valid initial="string.printable">
+              <remove value="'"/>
+              <remove value="&quot;"/>
+            </valid>
+          </sanitizer>
+        </param>
+      </repeat>
+      <param help="(-win_len) " label="window length in Thomson" min="1.0" name="param_algorithm_SignalToNoise_win_len" optional="True" type="float" value="200.0"/>
+      <param help="(-bin_count) " label="number of bins for intensity values" min="3" name="param_algorithm_SignalToNoise_bin_count" optional="True" type="integer" value="30"/>
+      <param help="(-min_required_elements) " label="minimum number of elements required in a window (otherwise it is considered sparse)" min="1" name="param_algorithm_SignalToNoise_min_required_elements" optional="True" type="integer" value="10"/>
+      <param checked="true" falsevalue="" help="(-write_log_messages) " label="Write out log messages in case of sparse windows or median in rightmost histogram bin" name="param_algorithm_SignalToNoise_write_log_messages" optional="True" truevalue="-algorithm:SignalToNoise:write_log_messages" type="boolean"/>
+      <expand macro="advanced_options">
+        <param help="(-processOption) " label="Whether to load all data and process them in-memory or whether to process the data on the fly (lowmemory) without loading the whole file into memory first" name="param_processOption" optional="True" type="select" value="inmemory">
+          <option value="inmemory">inmemory</option>
+          <option value="lowmemory">lowmemory</option>
+        </param>
+        <param checked="false" falsevalue="" help="(-force) " label="Overwrite tool specific checks" name="param_force" optional="True" truevalue="-force" type="boolean"/>
+        <param help="(-spacing_difference_gap) 'min_spacing' is the smaller of the two spacings from the peak apex to its two neighboring points. '0' to disable the constraint. Not applicable to chromatograms" label="The extension of a peak is stopped if the spacing between two subsequent data points exceeds 'spacing_difference_gap * min_spacing'" min="0.0" name="param_algorithm_spacing_difference_gap" optional="True" type="float" value="4.0"/>
+        <param help="(-spacing_difference) If this difference is exceeded a missing point is assumed (see parameter 'missing'). A higher value implies a less stringent peak definition, since individual signals within the peak are allowed to be further apart. '0' to disable the constraint. Not applicable to chromatograms" label="Maximum allowed difference between points during peak extension, in multiples of the minimal difference between the peak apex and its two neighboring points" min="0.0" name="param_algorithm_spacing_difference" optional="True" type="float" value="1.5"/>
+        <param help="(-missing) A missing data point occurs if the spacing between two subsequent data points exceeds 'spacing_difference * min_spacing'. 'min_spacing' is the smaller of the two spacings from the peak apex to its two neighboring points. Not applicable to chromatograms" label="Maximum number of missing points allowed when extending a peak to the left or to the right" min="0" name="param_algorithm_missing" optional="True" type="integer" value="1"/>
+        <param help="(-max_intensity) By default, it will be calculated automatically (see auto_mode). Only provide this parameter if you know what you are doing (and change 'auto_mode' to '-1')! All intensities EQUAL/ABOVE 'max_intensity' will be added to the LAST histogram bin. If you choose 'max_intensity' too small, the noise estimate might be too small as well.  If chosen too big, the bins become quite large (which you could counter by increasing 'bin_count', which increases runtime). In general, the Median-S/N estimator is more robust to a manual max_intensity than the MeanIterative-S/N" label="maximal intensity considered for histogram construction" min="-1" name="param_algorithm_SignalToNoise_max_intensity" optional="True" type="integer" value="-1"/>
+        <param help="(-auto_max_stdev_factor) " label="parameter for 'max_intensity' estimation (if 'auto_mode' == 0): mean + 'auto_max_stdev_factor' * stdev" max="999.0" min="0.0" name="param_algorithm_SignalToNoise_auto_max_stdev_factor" optional="True" type="float" value="3.0"/>
+        <param help="(-auto_max_percentile) " label="parameter for 'max_intensity' estimation (if 'auto_mode' == 1): auto_max_percentile th percentile" max="100" min="0" name="param_algorithm_SignalToNoise_auto_max_percentile" optional="True" type="integer" value="95"/>
+        <param help="(-auto_mode) " label="method to use to determine maximal intensity: -1 --&gt; use 'max_intensity'; 0 --&gt; 'auto_max_stdev_factor' method (default); 1 --&gt; 'auto_max_percentile' method" max="1" min="-1" name="param_algorithm_SignalToNoise_auto_mode" optional="True" type="integer" value="0"/>
+        <param help="(-noise_for_empty_window) " label="noise value used for sparse windows" name="param_algorithm_SignalToNoise_noise_for_empty_window" type="float" value="1e+20"/>
+      </expand>
+    </inputs>
+    <outputs>
+      <data format="mzml" name="param_out"/>
+    </outputs>
+    <help>Finds mass spectrometric peaks in profile mass spectra.
+
+
+For more information, visit http://ftp.mi.fu-berlin.de/OpenMS/release-documentation/html/TOPP_PeakPickerHiRes.html</help>
+  </tool>

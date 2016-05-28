@@ -1,0 +1,289 @@
+<tool id="infernal_cmsearch" name="Search covariance model(s)" version="1.1.0.2">
+    <description>against a sequence database (cmsearch)</description>
+    <parallelism method="multi" split_inputs="seqdb" split_mode="to_size" split_size="500" shared_inputs="" merge_outputs="outfile,multiple_alignment_output"></parallelism>
+    <requirements>
+        <requirement type="package">infernal</requirement>
+        <requirement type="package" version="1.1">infernal</requirement>
+        <requirement type="package" version="8.22">gnu_coreutils</requirement>
+    </requirements>
+    <command>
+<![CDATA[
+        ## a temp file is needed, because the standard tabular output from infernal is not usefull in Galaxy
+        ## it will be converted to a tab delimited file and piped to Galaxy
+        temp_tabular_output=\$(mktemp);
+
+        cmsearch
+            ## Infernal Options
+            --cpu "\${GALAXY_SLOTS:-12}"
+            -o /dev/null
+            --tformat $seqdb.ext ##target format: fasta, embl, genbank, ddbj, stockholm, pfam, a2m, afa, clustal, and phylip
+            $bottomonly
+            $toponly
+            $cyk
+            $notrunc
+            $max
+            $nohmm
+            $mid
+            ##$bitscore_thresholds
+            --tblout \$temp_tabular_output
+            $g
+            #if $A:
+                $A $multiple_alignment_output
+            #end if
+
+            #if str($inclusion_thresholds_opts.inclusion_thresholds_selector) == "--incE":
+                --incE $inclusion_thresholds_opts.incE
+            #elif str($inclusion_thresholds_opts.inclusion_thresholds_selector) == "--incT":
+                --incT $inclusion_thresholds_opts.incT
+            #end if
+
+            #if str($reporting_thresholds_opts.reporting_thresholds_selector) == "-E":
+                -E $reporting_thresholds_opts.E
+            #elif str($reporting_thresholds_opts.reporting_thresholds_selector) == "-T":
+                -T $reporting_thresholds_opts.T
+            #end if
+
+            ## CM file from the history or stored as database on disc
+
+            #if str($cm_opts.cm_opts_selector) == "db":
+                $cm_opts.database.fields.path
+            #else:
+                $cm_opts.cmfile
+            #end if
+
+            ## sequence file
+            $seqdb
+            2>&1
+            ;
+
+            ## 1. replace all lines starting # (comment lines)
+            ## 2. replace the first 18 spaces with tabs, 18th field is a free text field (can contain spaces)
+            sed -e 's/#.*$//' -e '/^$/d' -e 's/\s\+/\t/g' -e 's/\t/ /18g' \$temp_tabular_output > $outfile
+
+]]>
+    </command>
+        <inputs>
+
+            <param name="seqdb" type="data" format="fasta" label="Sequence database"/>
+
+            <conditional name="cm_opts">
+                <param name="cm_opts_selector" type="select" label="Subject covariance models">
+                  <option value="db" selected="True">Locally installed covariance models</option>
+                  <option value="histdb">Covariance model from your history</option>
+                </param>
+                <when value="db">
+                    <param name="database" type="select" label="Covariance models">
+                        <options from_file="infernal.loc">
+                          <column name="value" index="0"/>
+                          <column name="name" index="1"/>
+                          <column name="path" index="2"/>
+                        </options>
+                    </param>
+                </when>
+                <when value="histdb">
+                    <param name="cmfile" type="data" format="cm" label="Covariance models file from the history."/>
+                </when>
+            </conditional>
+
+            <param name="g" truevalue="-g" falsevalue="" checked="False" type="boolean"
+                label="Turn on the glocal alignment algorithm" help="... global with respect to the query model and local with respect to the target database."/>
+
+            <param name="bottomonly" truevalue="--bottomonly" falsevalue="" checked="False" type="boolean"
+                label="Only search the bottom (Crick) strand of target sequences" help="in the sequence database"/>
+            <param name="toponly" truevalue="--toponly" falsevalue="" checked="False" type="boolean"
+                label="Only search the top (Watson) strand of target sequences" help="in the sequence database"/>
+
+            <param name="cyk" truevalue="--cyk" falsevalue="" checked="False" type="boolean"
+                label="Use the CYK algorithm, not Inside, to determine the final score of all hits" help=""/>
+            <param name="--acyk" truevalue="--cyk" falsevalue="" checked="False" type="boolean"
+                label="Use the CYK algorithm to align hits" help="By default, the Durbin/Holmes optimal accuracy algorithm is used, which finds the alignment that maximizes the expected accuracy of all aligned residues."/>
+
+            <param name="notrunc" truevalue="--notrunc" falsevalue="" checked="False" type="boolean"
+                label="Turn off truncated hit detection" help=""/>
+
+            <!-- accelleration pipeline -->
+
+            <param name="max" truevalue="--max" falsevalue="" checked="False" type="boolean"
+                label="Turn off all filters, and run non-banded Inside on every full-length target sequence" help="This
+                increases sensitivity somewhat, at an extremely large cost in speed."/>
+
+            <param name="nohmm" truevalue="--nohmm" falsevalue="" checked="False" type="boolean"
+                label="Turn off all HMM filter stages " help=""/>
+
+            <param name="mid" truevalue="--mid" falsevalue="" checked="False" type="boolean"
+                label="Turn off the HMM SSV and Viterbi filter stages" help=""/>
+
+
+            <!-- Options for model-specific score thresholding -->
+            <!--
+            <param name="bitscore_thresholds" type="select" label="Bit score thresholds" help="Curated CM databases may define specific bit score thresholds for each CM, superseding any thresholding based on statistical significance alone.">
+                <option value="" selected="true">None</option>
+                <option value=" - -cut_ga">GA (gathering) bit scores</option>
+                <option value=" - -cut_nc">NC (noise cutoff) bit score</option>
+                <option value=" - -cut_tc">TC (trusted cutoff) bit score</option>
+            </param>
+            -->
+            <!-- Options for inclusion thresholds -->
+
+
+            <conditional name="inclusion_thresholds_opts">
+                <param name="inclusion_thresholds_selector" type="select" label="Inclusion thresholds"
+                help="Inclusion thresholds are stricter than reporting thresholds. Inclusion thresholds control which hits are considered to be reliable enough to be included in an output alignment or in a possible subsequent search round, or marked as significant (”!”) as opposed to questionable (”?”) in hit output.">
+                    <option value="" selected="true">default</option>
+                    <option value="--incE">Use E-value</option>
+                    <option value="--incT">Use bit score</option>
+                </param>
+                <when value=""/>
+                <when value="--incE">
+                    <param name="incE" type="float" value="0.01" label="Use E-value" help="of &lt;= X as the hit inclusion threshold.">
+                        <sanitizer>
+                            <valid initial="string.printable">
+                                <remove value="&apos;"/>
+                            </valid>
+                        </sanitizer>
+                    </param>
+                </when>
+                <when value="--incT">
+                    <param name="incT" type="integer" value="0" label="Use bit score" help="of >= X as the hit inclusion threshold.">
+                        <sanitizer>
+                            <valid initial="string.printable">
+                                <remove value="&apos;"/>
+                            </valid>
+                        </sanitizer>
+                    </param>
+                </when>
+            </conditional>
+
+            <!-- Options controlling reporting thresholds -->
+
+            <conditional name="reporting_thresholds_opts">
+                <param name="reporting_thresholds_selector" type="select" label="reporting thresholds"
+                help="Reporting thresholds control which hits are reported in output files">
+                    <option value="" selected="true">default</option>
+                    <option value="-E">Use E-value</option>
+                    <option value="-T">Use bit score</option>
+                </param>
+                <when value=""/>
+                <when value="-E">
+                    <param name="E" type="float" value="10.0" label="Use E-value" help="of &lt;= X as the hit reporting threshold. The default is 10.0, meaning that on average, about 10 false positives will be reported per query, so you can see the top of the noise and decide for yourself if it’s really noise.">
+                        <sanitizer>
+                            <valid initial="string.printable">
+                                <remove value="&apos;"/>
+                            </valid>
+                        </sanitizer>
+                    </param>
+                </when>
+                <when value="-T">
+                    <param name="T" type="integer" value="0" label="Use bit score" help="of >= X as the hit reporting threshold.">
+                        <sanitizer>
+                            <valid initial="string.printable">
+                                <remove value="&apos;"/>
+                            </valid>
+                        </sanitizer>
+                    </param>
+                </when>
+            </conditional>
+
+            <param name="A" truevalue="-A" falsevalue="" checked="False" type="boolean"
+                label="Save a multiple alignment of all significant hits" help="... those satisfying inclusion thresholds"/>
+
+        </inputs>
+    <outputs>
+
+        <data format="tabular" name="outfile" label="cmsearch on ${on_string}"/>
+        <data format="tabular" name="multiple_alignment_output" label="cmsearch on ${on_string} (multi alignment)">
+            <filter>A is True</filter>
+        </data>
+
+    </outputs>
+    <help>
+<![CDATA[
+
+
+**What it does**
+
+cmsearch belongs to the INFERNAL software package that allows you to make consensus RNA secondary structure profiles, and use them to search nucleic acid sequence databases for homologous RNAs, or to create new structure-based multiple sequence alignments.
+You can use your model to search for new homologues of your RNA family. cmsearch is used to search one or more covariance models (CMs) against a sequence database. cmsearch searches both strands of each sequence in the target database, and returns alignments for high scoring hits.
+
+To build CMs from multiple alignments, see cmbuild (build covariance models).
+
+
+**Input**
+
+The CM query file must have been calibrated for E-values with cmcalibrate. As a special exception, any models CM query files that have zero basepairs need not be calibrated. 
+
+
+**Options**
+
+- *Turn on the glocal alignment algorithm*: global with respect to the query model and local with respect to the target database. By default, the local alignment algorithm is used which is local with respect to both the target sequence and the model. In local mode, the alignment to span two or more subsequences if necessary (e.g. if the structures of the query model and target sequence are only partially shared), allowing certain large insertions and deletions in the structure to be penalized differently than normal indels. Local mode performs better on empirical benchmarks and is significantly more sensitive for remote homology detection. Empirically, glocal searches return many fewer hits than local searches, so glocal may be desired for some applications. With *Turn on the glocal alignment algorithm*, all models must be calibrated, even those with zero basepairs.
+
+- *Only search the bottom (Crick) strand of target sequences*: Hits can occur on either the top (Watson) or bottom (Crick) strand of the target sequence. By default, both strands are searched.
+
+- *Only search the top (Watson) strand of target sequences*: Hits can occur on either the top (Watson) or bottom (Crick) strand of the target sequence. By default, both strands are searched.
+
+- *Use the CYK algorithm, not Inside, to determine the final score of all hits*: If selecting "yes", the CYK algorithm instead of the CM Inside algorithm (the SCFG analog of the HMM Forward algorithm) is used.
+
+- *Use the CYK algorithm to align hits*: By default, the Durbin/Holmes optimal accuracy algo-
+rithm is used, which finds the alignment that maximizes the expected accuracy of all aligned
+residues.
+
+- *Turn off truncated hit detection*: Turns off truncated hit detection and will reduce the running time most significantly for target files that include many short sequences.
+
+- *Turn off all filters, and run non-banded Inside on every full-length target sequence*: This
+increases sensitivity somewhat, at an extremely large cost in speed.
+
+- *Turn off all HMM filter stages*: The CYK filter, using QDBs, will be run on every full-length target sequence and will enforce a P-value threshold of 0.0001. Each subsequence that survives CYK will be passed to Inside, which will also use QDBs (but a looser set). This increases sensitivity somewhat, at a very large cost in speed.
+
+-*Turn off the HMM SSV and Viterbi filter stages*:Sets remaining HMM filter
+thresholds to 0.02 by default. This may increase sensitivity, at a significant cost in speed.
+
+- *Inclusion thresholds*: *Use E-value* - Use an E-value as the hit inclusion threshold. The default is 0.01, meaning that on average, about 1 false positive would be expected in every 100 searches with different
+query sequences. *Use Bit Score* - Instead of using E-values for setting the inclusion threshold, instead use a bit score as the hit inclusion threshold. By default this option is unset.
+
+
+**Output Options**
+
+- *reporting thresholds*: Hits are ranked by statistical significance (E-value). By *default*, all hits with an E-value <= 10 are reported. The following options allow you to change the default *E-value* reporting thresholds, or to use *bit score* thresholds instead. 
+
+
+Output Example:
+
+
+# cmsearch :: search CM(s) against a sequence database
+# INFERNAL 1.1.1 (July 2014)
+# Copyright (C) 2014 Howard Hughes Medical Institute.
+# Freely distributed under the GNU General Public License (GPLv3).
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query CM file:                         tRNA5.cm
+# target sequence database:              tutorial/mrum-genome.fa
+# number of worker threads:              8
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+The second section is a list of ranked top hits (sorted by E-value, most significant hit first):
+
+rank     E-value  score  bias  sequence      start     end   mdl trunc   gc  description
+----   --------- ------ -----  ----------- ------- -------   --- ----- ----  -----------
+(1) !   1.3e-18   71.5   0.0  NC_013790.1  362026  361955 -  cm    no 0.50  Methanobrevibacter ruminantium M1 
+(2) !   3.3e-18   70.2   0.0  NC_013790.1 2585265 2585193 -  cm    no 0.60  Methanobrevibacter ruminantium M1 
+
+
+
+For further questions please refere to the Infernal `Userguide <http://selab.janelia.org/software/infernal/Userguide.pdf>`_.
+
+]]>
+    </help>
+    <citations>
+        <citation type="doi">10.1093/bioinformatics/btt509</citation>
+        <citation type="bibtex">
+            @ARTICLE{bgruening_galaxytools,
+                Author = {Björn Grüning, Cameron Smith, Torsten Houwaart, Nicola Soranzo, Eric Rasche},
+                keywords = {bioinformatics, ngs, galaxy, cheminformatics, rna},
+                title = {{Galaxy Tools - A collection of bioinformatics and cheminformatics tools for the Galaxy environment}},
+                url = {https://github.com/bgruening/galaxytools}
+            }
+        </citation>
+    </citations>
+   
+    
+</tool>

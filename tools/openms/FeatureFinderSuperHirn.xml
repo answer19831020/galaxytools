@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--This is a configuration file for the integration of a tools into Galaxy (https://galaxyproject.org/). This file was automatically generated using CTD2Galaxy.-->
+  <!--Proposed Tool Section: [Quantitation]-->
+  <tool id="FeatureFinderSuperHirn" name="FeatureFinderSuperHirn" version="2.0.0">
+    <description>Finds mass spectrometric features in mass spectra.</description>
+    <macros>
+      <token name="@EXECUTABLE@">FeatureFinderSuperHirn</token>
+      <import>macros.xml</import>
+    </macros>
+    <expand macro="references"/>
+    <expand macro="stdio"/>
+    <expand macro="requirements"/>
+    <command>FeatureFinderSuperHirn
+
+#if $param_in:
+  -in $param_in
+#end if
+#if $param_out:
+  -out $param_out
+#end if
+-threads \${GALAXY_SLOTS:-24}
+#if $param_algorithm_centroiding_active:
+  -algorithm:centroiding:active
+#end if
+#if $param_algorithm_centroiding_window_width:
+  -algorithm:centroiding:window_width $param_algorithm_centroiding_window_width
+#end if
+#if $param_algorithm_centroiding_absolute_isotope_mass_precision:
+  -algorithm:centroiding:absolute_isotope_mass_precision $param_algorithm_centroiding_absolute_isotope_mass_precision
+#end if
+#if $param_algorithm_centroiding_relative_isotope_mass_precision:
+  -algorithm:centroiding:relative_isotope_mass_precision $param_algorithm_centroiding_relative_isotope_mass_precision
+#end if
+#if $param_algorithm_centroiding_minimal_peak_height:
+  -algorithm:centroiding:minimal_peak_height $param_algorithm_centroiding_minimal_peak_height
+#end if
+#if $param_algorithm_centroiding_min_ms_signal_intensity:
+  -algorithm:centroiding:min_ms_signal_intensity $param_algorithm_centroiding_min_ms_signal_intensity
+#end if
+
+#if $rep_param_algorithm_ms1_precursor_detection_scan_levels:
+-algorithm:ms1:precursor_detection_scan_levels
+  #for token in $rep_param_algorithm_ms1_precursor_detection_scan_levels:
+    #if &quot; &quot; in str(token):
+      &quot;$token.param_algorithm_ms1_precursor_detection_scan_levels&quot;
+    #else
+      $token.param_algorithm_ms1_precursor_detection_scan_levels
+    #end if
+  #end for
+#end if
+#if $param_algorithm_ms1_max_inter_scan_distance:
+  -algorithm:ms1:max_inter_scan_distance $param_algorithm_ms1_max_inter_scan_distance
+#end if
+#if $param_algorithm_ms1_tr_resolution:
+  -algorithm:ms1:tr_resolution $param_algorithm_ms1_tr_resolution
+#end if
+#if $param_algorithm_ms1_intensity_threshold:
+  -algorithm:ms1:intensity_threshold $param_algorithm_ms1_intensity_threshold
+#end if
+#if $param_algorithm_ms1_max_inter_scan_rt_distance:
+  -algorithm:ms1:max_inter_scan_rt_distance $param_algorithm_ms1_max_inter_scan_rt_distance
+#end if
+#if $param_algorithm_ms1_min_nb_cluster_members:
+  -algorithm:ms1:min_nb_cluster_members $param_algorithm_ms1_min_nb_cluster_members
+#end if
+#if $param_algorithm_ms1_detectable_isotope_factor:
+  -algorithm:ms1:detectable_isotope_factor $param_algorithm_ms1_detectable_isotope_factor
+#end if
+#if $param_algorithm_ms1_intensity_cv:
+  -algorithm:ms1:intensity_cv $param_algorithm_ms1_intensity_cv
+#end if
+#if $param_algorithm_ms1_retention_time_tolerance:
+  -algorithm:ms1:retention_time_tolerance $param_algorithm_ms1_retention_time_tolerance
+#end if
+#if $param_algorithm_ms1_mz_tolerance:
+  -algorithm:ms1:mz_tolerance $param_algorithm_ms1_mz_tolerance
+#end if
+#if $param_algorithm_ms1_feature_merger_active:
+  -algorithm:ms1_feature_merger:active
+#end if
+#if $param_algorithm_ms1_feature_merger_tr_resolution:
+  -algorithm:ms1_feature_merger:tr_resolution $param_algorithm_ms1_feature_merger_tr_resolution
+#end if
+#if $param_algorithm_ms1_feature_merger_initial_apex_tr_tolerance:
+  -algorithm:ms1_feature_merger:initial_apex_tr_tolerance $param_algorithm_ms1_feature_merger_initial_apex_tr_tolerance
+#end if
+#if $param_algorithm_ms1_feature_merger_feature_merging_tr_tolerance:
+  -algorithm:ms1_feature_merger:feature_merging_tr_tolerance $param_algorithm_ms1_feature_merger_feature_merging_tr_tolerance
+#end if
+#if $param_algorithm_ms1_feature_merger_intensity_variation_percentage:
+  -algorithm:ms1_feature_merger:intensity_variation_percentage $param_algorithm_ms1_feature_merger_intensity_variation_percentage
+#end if
+#if $param_algorithm_ms1_feature_merger_ppm_tolerance_for_mz_clustering:
+  -algorithm:ms1_feature_merger:ppm_tolerance_for_mz_clustering $param_algorithm_ms1_feature_merger_ppm_tolerance_for_mz_clustering
+#end if
+#if $param_algorithm_ms1_feature_selection_options_start_elution_window:
+  -algorithm:ms1_feature_selection_options:start_elution_window $param_algorithm_ms1_feature_selection_options_start_elution_window
+#end if
+#if $param_algorithm_ms1_feature_selection_options_end_elution_window:
+  -algorithm:ms1_feature_selection_options:end_elution_window $param_algorithm_ms1_feature_selection_options_end_elution_window
+#end if
+#if $param_algorithm_ms1_feature_selection_options_mz_range_min:
+  -algorithm:ms1_feature_selection_options:mz_range_min $param_algorithm_ms1_feature_selection_options_mz_range_min
+#end if
+#if $param_algorithm_ms1_feature_selection_options_mz_range_max:
+  -algorithm:ms1_feature_selection_options:mz_range_max $param_algorithm_ms1_feature_selection_options_mz_range_max
+#end if
+#if $param_algorithm_ms1_feature_selection_options_chrg_range_min:
+  -algorithm:ms1_feature_selection_options:chrg_range_min $param_algorithm_ms1_feature_selection_options_chrg_range_min
+#end if
+#if $param_algorithm_ms1_feature_selection_options_chrg_range_max:
+  -algorithm:ms1_feature_selection_options:chrg_range_max $param_algorithm_ms1_feature_selection_options_chrg_range_max
+#end if
+#if $adv_opts.adv_opts_selector=='advanced':
+    #if $adv_opts.param_force:
+  -force
+#end if
+#end if
+</command>
+    <inputs>
+      <param format="mzml" help="(-in) " label="input profile data file" name="param_in" optional="False" type="data"/>
+      <param checked="false" falsevalue="" help="(-active) " label="MS1 data centroid data" name="param_algorithm_centroiding_active" optional="True" truevalue="-algorithm:centroiding:active" type="boolean"/>
+      <param help="(-window_width) " label="Centroid window width" min="1" name="param_algorithm_centroiding_window_width" optional="True" type="integer" value="5"/>
+      <param help="(-absolute_isotope_mass_precision) " label="Absolute isotope mass precision (Da)" min="0.0" name="param_algorithm_centroiding_absolute_isotope_mass_precision" optional="True" type="float" value="0.01"/>
+      <param help="(-relative_isotope_mass_precision) " label="Relative isotope mass precision" min="0.0" name="param_algorithm_centroiding_relative_isotope_mass_precision" optional="True" type="float" value="10.0"/>
+      <param help="(-minimal_peak_height) " label="Minimal peak height" min="0.0" name="param_algorithm_centroiding_minimal_peak_height" optional="True" type="float" value="0.0"/>
+      <param help="(-min_ms_signal_intensity) " label="Minimal Centroid MS Signal Intensity" min="0.0" name="param_algorithm_centroiding_min_ms_signal_intensity" optional="True" type="float" value="50.0"/>
+      <repeat max="1" min="0" name="rep_param_algorithm_ms1_precursor_detection_scan_levels" title="param_algorithm_ms1_precursor_detection_scan_levels">
+        <param help="(-precursor_detection_scan_levels) " label="Precursor detection scan levels" name="param_algorithm_ms1_precursor_detection_scan_levels" size="30" type="text" value="1">
+          <sanitizer>
+            <valid initial="string.printable">
+              <remove value="'"/>
+              <remove value="&quot;"/>
+            </valid>
+          </sanitizer>
+        </param>
+      </repeat>
+      <param help="(-max_inter_scan_distance) " label="MS1 max inter scan distance" min="0" name="param_algorithm_ms1_max_inter_scan_distance" optional="True" type="integer" value="0"/>
+      <param help="(-tr_resolution) " label="MS1 LC retention time resolution" min="0.0" name="param_algorithm_ms1_tr_resolution" optional="True" type="float" value="0.01"/>
+      <param help="(-intensity_threshold) " label="FT peak detect MS1 intensity min threshold" min="0.0" name="param_algorithm_ms1_intensity_threshold" optional="True" type="float" value="1000.0"/>
+      <param help="(-max_inter_scan_rt_distance) " label="MS1 max inter scan distance" min="0.0" name="param_algorithm_ms1_max_inter_scan_rt_distance" optional="True" type="float" value="0.1"/>
+      <param help="(-min_nb_cluster_members) " label="FT peak detect MS1 min nb peak members" min="0" name="param_algorithm_ms1_min_nb_cluster_members" optional="True" type="integer" value="4"/>
+      <param help="(-detectable_isotope_factor) " label="Detectable isotope facto" min="0.0" name="param_algorithm_ms1_detectable_isotope_factor" optional="True" type="float" value="0.05"/>
+      <param help="(-intensity_cv) " label="IntensityCV" min="0.0" name="param_algorithm_ms1_intensity_cv" optional="True" type="float" value="0.9"/>
+      <param help="(-retention_time_tolerance) " label="MS1 retention time tolerance (minutes)" min="0.0" name="param_algorithm_ms1_retention_time_tolerance" optional="True" type="float" value="0.5"/>
+      <param help="(-mz_tolerance) " label="MS1 m/z tolerance (ppm)" min="0.0" name="param_algorithm_ms1_mz_tolerance" optional="True" type="float" value="0.0"/>
+      <param checked="true" falsevalue="" help="(-active) " label="Activation of MS1 feature merging post processing" name="param_algorithm_ms1_feature_merger_active" optional="True" truevalue="-algorithm:ms1_feature_merger:active" type="boolean"/>
+      <param help="(-tr_resolution) " label="MS1 LC retention time resolution" min="0.0" name="param_algorithm_ms1_feature_merger_tr_resolution" optional="True" type="float" value="0.01"/>
+      <param help="(-initial_apex_tr_tolerance) " label="Initial Apex Tr tolerance" min="0.0" name="param_algorithm_ms1_feature_merger_initial_apex_tr_tolerance" optional="True" type="float" value="5.0"/>
+      <param help="(-feature_merging_tr_tolerance) " label="MS1 feature Tr merging tolerance" min="0.0" name="param_algorithm_ms1_feature_merger_feature_merging_tr_tolerance" optional="True" type="float" value="1.0"/>
+      <param help="(-intensity_variation_percentage) " label="Percentage of intensity variation between LC border peaks" max="100.0" min="0.0" name="param_algorithm_ms1_feature_merger_intensity_variation_percentage" optional="True" type="float" value="25.0"/>
+      <param help="(-ppm_tolerance_for_mz_clustering) " label="PPM value for the m/z clustering of merging candidates" min="0.0" name="param_algorithm_ms1_feature_merger_ppm_tolerance_for_mz_clustering" optional="True" type="float" value="10.0"/>
+      <param help="(-start_elution_window) " label="start elution window (minutes)" min="0.0" name="param_algorithm_ms1_feature_selection_options_start_elution_window" optional="True" type="float" value="0.0"/>
+      <param help="(-end_elution_window) " label="end elution window (minutes)" min="0.0" name="param_algorithm_ms1_feature_selection_options_end_elution_window" optional="True" type="float" value="180.0"/>
+      <param help="(-mz_range_min) " label="MS1 feature mz range min" min="0.0" name="param_algorithm_ms1_feature_selection_options_mz_range_min" optional="True" type="float" value="0.0"/>
+      <param help="(-mz_range_max) " label="MS1 feature mz range max" min="0.0" name="param_algorithm_ms1_feature_selection_options_mz_range_max" optional="True" type="float" value="2000.0"/>
+      <param help="(-chrg_range_min) " label="MS1 feature CHRG range min" min="0" name="param_algorithm_ms1_feature_selection_options_chrg_range_min" optional="True" type="integer" value="1"/>
+      <param help="(-chrg_range_max) " label="MS1 feature CHRG range max" min="0" name="param_algorithm_ms1_feature_selection_options_chrg_range_max" optional="True" type="integer" value="5"/>
+      <expand macro="advanced_options">
+        <param checked="false" falsevalue="" help="(-force) " label="Overwrite tool specific checks" name="param_force" optional="True" truevalue="-force" type="boolean"/>
+      </expand>
+    </inputs>
+    <outputs>
+      <data format="xml" name="param_out"/>
+    </outputs>
+    <help>Finds mass spectrometric features in mass spectra.
+
+
+For more information, visit http://ftp.mi.fu-berlin.de/OpenMS/release-documentation/html/TOPP_FeatureFinderSuperHirn.html</help>
+  </tool>

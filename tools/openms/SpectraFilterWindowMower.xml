@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--This is a configuration file for the integration of a tools into Galaxy (https://galaxyproject.org/). This file was automatically generated using CTD2Galaxy.-->
+  <!--Proposed Tool Section: [Identification]-->
+  <tool id="SpectraFilterWindowMower" name="SpectraFilterWindowMower" version="2.0.0">
+    <description>Applies thresholdfilter to peak spectra.</description>
+    <macros>
+      <token name="@EXECUTABLE@">SpectraFilterWindowMower</token>
+      <import>macros.xml</import>
+    </macros>
+    <expand macro="references"/>
+    <expand macro="stdio"/>
+    <expand macro="requirements"/>
+    <command>SpectraFilterWindowMower
+
+#if $param_in:
+  -in $param_in
+#end if
+#if $param_out:
+  -out $param_out
+#end if
+-threads \${GALAXY_SLOTS:-24}
+#if $param_algorithm_windowsize:
+  -algorithm:windowsize $param_algorithm_windowsize
+#end if
+#if $param_algorithm_peakcount:
+  -algorithm:peakcount $param_algorithm_peakcount
+#end if
+#if $param_algorithm_movetype:
+  -algorithm:movetype
+  #if &quot; &quot; in str($param_algorithm_movetype):
+    &quot;$param_algorithm_movetype&quot;
+  #else
+    $param_algorithm_movetype
+  #end if
+#end if
+#if $adv_opts.adv_opts_selector=='advanced':
+    #if $adv_opts.param_force:
+  -force
+#end if
+#end if
+</command>
+    <inputs>
+      <param format="mzml" help="(-in) " label="input file" name="param_in" optional="False" type="data"/>
+      <param help="(-windowsize) " label="The size of the sliding window along the m/z axis" name="param_algorithm_windowsize" type="float" value="50.0"/>
+      <param help="(-peakcount) " label="The number of peaks that should be kept" name="param_algorithm_peakcount" type="integer" value="2"/>
+      <param help="(-movetype) " label="Whether sliding window (one peak steps) or jumping window (window size steps) should be used" name="param_algorithm_movetype" optional="True" type="select" value="slide">
+        <option value="slide">slide</option>
+        <option value="jump">jump</option>
+      </param>
+      <expand macro="advanced_options">
+        <param checked="false" falsevalue="" help="(-force) " label="Overwrite tool specific checks" name="param_force" optional="True" truevalue="-force" type="boolean"/>
+      </expand>
+    </inputs>
+    <outputs>
+      <data format="mzml" name="param_out"/>
+    </outputs>
+    <help>Applies thresholdfilter to peak spectra.
+
+
+For more information, visit http://ftp.mi.fu-berlin.de/OpenMS/release-documentation/html/TOPP_SpectraFilterWindowMower.html</help>
+  </tool>

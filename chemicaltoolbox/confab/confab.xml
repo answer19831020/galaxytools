@@ -1,25 +1,32 @@
-<tool id="ctb_confab" name="Conformer calculation" version="0.1">
+<tool id="ctb_confab" name="Conformer calculation" version="0.3">
     <description>for molecules (confab)</description>
-    <parallelism method="multi" split_inputs="infile" split_mode="to_size" split_size="100" shared_inputs="" merge_outputs="outfile"></parallelism>
+    <!--parallelism method="multi" split_inputs="infile" split_mode="to_size" split_size="100" shared_inputs="" merge_outputs="outfile"></parallelism-->
     <requirements>
-        <requirement type="package" version="1.0.1">confab</requirement>
+         <requirement type="package" version="2.3.90dev7d621d9">openbabel</requirement>
     </requirements>
-    <command> confab 
+    <command detect_errors="aggressive">
+<![CDATA[
+
+    obabel
+        "${infile}"
+        -O "${outfile}"
         -i ${infile.ext}
         -o sdf
-        -r $RMSD 
-        -e $energy 
-        -c $conformers 
-        $first_conformer 
-        $infile
-        $outfile 2>&#38;1
+        --confab
+        --rcutoff $RMSD
+        --ecutoff $energy
+        --conf $conformers
+        $first_conformer
+
+]]>
     </command>
     <inputs>
         <param name="infile" type="data" format="sdf,mol2" label="Input molecule with 3D coordinates" help="Dataset missing? See TIP below"/>
         <param name='RMSD' type='float' value='0.5' label='RMSD cutoff (in Angstrom)' />
         <param name='energy' type='float' value='50.0' label='Energy cutoff (in kcal/mol)' />
         <param name='conformers' type='integer' value='100' label='Max number of conformers to test' />
-        <param name='first_conformer' type='boolean' truevalue='-a' falsevalue='' label='Include the input conformation as the first conformer' />
+        <param name='first_conformer' type='boolean' truevalue='--original' falsevalue=''
+            label='Include the input conformation as the first conformer' />
     </inputs>
     <outputs>
         <data format="sdf" name="outfile" label="${tool.name} on ${on_string}"/>
@@ -30,11 +37,12 @@
             <param name='RMSD'  value='0.5' />
             <param name='energy' value='50.0' />
             <param name='conformers' value='100000' />
-            <param name='first_conformer' value='-a' />
-            <output name="outfile" file='confab_on_CID_3033.sdf' ftype='sdf' />
-        </test>	
+            <param name='first_conformer' value="True" />
+            <output name="outfile" file='confab_on_CID_3033.sdf' ftype='sdf' lines_diff="4"/>
+        </test>
     </tests>
 <help>
+<![CDATA[
 
 .. class:: infomark
 
@@ -51,7 +59,7 @@ Confab_ is a conformation generator. The algorithm starts with an input 3D struc
 **Input**
 
 * Example::
-	
+
 	21.2060    9.9350   63.0810 C   0  0  0  0  0  0  0  0  0  0  0  0
 	21.2410    9.4460   64.5510 C   0  0  0  0  0  0  0  0  0  0  0  0
 	22.0000    8.1250   64.6300 C   0  0  0  0  0  0  0  0  0  0  0  0
@@ -122,17 +130,12 @@ Confab_ is a conformation generator. The algorithm starts with an input 3D struc
   9  8  1  6  0  0  0
  10  9  1  1  0  0  0
 
------
-
-.. class:: infomark
-
-**Cite**
-
-Confab_
-
-.. _Confab: https://code.google.com/p/confab/
 
 
- </help>
-
+]]>
+    </help>
+    <citations>
+        <citation type="doi">10.1186/1758-2946-3-33</citation>
+        <citation type="doi">10.1186/1758-2946-3-8</citation>
+    </citations>
 </tool>

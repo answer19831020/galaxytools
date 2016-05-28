@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--This is a configuration file for the integration of a tools into Galaxy (https://galaxyproject.org/). This file was automatically generated using CTD2Galaxy.-->
+  <!--Proposed Tool Section: [Targeted Experiments]-->
+  <tool id="OpenSwathConfidenceScoring" name="OpenSwathConfidenceScoring" version="2.0.0">
+    <description>Compute confidence scores for OpenSwath results</description>
+    <macros>
+      <token name="@EXECUTABLE@">OpenSwathConfidenceScoring</token>
+      <import>macros.xml</import>
+    </macros>
+    <expand macro="references"/>
+    <expand macro="stdio"/>
+    <expand macro="requirements"/>
+    <command>OpenSwathConfidenceScoring
+
+#if $param_in:
+  -in $param_in
+#end if
+#if $param_lib:
+  -lib $param_lib
+#end if
+#if $param_out:
+  -out $param_out
+#end if
+#if $param_trafo:
+  -trafo $param_trafo
+#end if
+#if $param_decoys:
+  -decoys $param_decoys
+#end if
+#if $param_transitions:
+  -transitions $param_transitions
+#end if
+-threads \${GALAXY_SLOTS:-24}
+#if $adv_opts.adv_opts_selector=='advanced':
+    #if $adv_opts.param_force:
+  -force
+#end if
+    #if $adv_opts.param_GLM_intercept:
+  -GLM:intercept $adv_opts.param_GLM_intercept
+#end if
+    #if $adv_opts.param_GLM_delta_rt:
+  -GLM:delta_rt $adv_opts.param_GLM_delta_rt
+#end if
+    #if $adv_opts.param_GLM_dist_int:
+  -GLM:dist_int $adv_opts.param_GLM_dist_int
+#end if
+#end if
+</command>
+    <inputs>
+      <param format="xml" help="(-in) " label="Input file (OpenSwath results)" name="param_in" optional="False" type="data"/>
+      <param format="traml" help="(-lib) " label="Assay library" name="param_lib" optional="False" type="data"/>
+      <param format="trafoxml" help="(-trafo) " label="Retention time transformation" name="param_trafo" optional="True" type="data"/>
+      <param help="(-decoys) " label="Number of decoy assays to select from the library for every true assay (0 for &quot;all&quot;)" min="0" name="param_decoys" optional="True" type="integer" value="1000"/>
+      <param help="(-transitions) " label="Number of transitions per feature to consider (highest intensities first; 0 for &quot;all&quot;)" min="0" name="param_transitions" optional="True" type="integer" value="6"/>
+      <expand macro="advanced_options">
+        <param checked="false" falsevalue="" help="(-force) " label="Overwrite tool specific checks" name="param_force" optional="True" truevalue="-force" type="boolean"/>
+        <param help="(-intercept) " label="Intercept term" name="param_GLM_intercept" type="float" value="3.87333466"/>
+        <param help="(-delta_rt) " label="Coefficient of retention time difference" name="param_GLM_delta_rt" type="float" value="-0.02898629"/>
+        <param help="(-dist_int) " label="Coefficient of intensity distance" name="param_GLM_dist_int" type="float" value="-7.75880768"/>
+      </expand>
+    </inputs>
+    <outputs>
+      <data format="xml" name="param_out"/>
+    </outputs>
+    <help>Compute confidence scores for OpenSwath results
+
+
+For more information, visit http://ftp.mi.fu-berlin.de/OpenMS/release-documentation/html/TOPP_OpenSwathConfidenceScoring.html</help>
+  </tool>

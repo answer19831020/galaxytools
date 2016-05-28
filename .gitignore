@@ -15,9 +15,8 @@ var
 sdist
 develop-eggs
 .installed.cfg
-lib
-lib64
 .hg
+.svn
 
 *~
 
@@ -49,3 +48,6 @@ nosetests.xml
 *.bz
 *.bz2
 .hg
+*.swp
+tool_test_output.html
+tool_test_output.json

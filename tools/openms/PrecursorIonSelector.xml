@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--This is a configuration file for the integration of a tools into Galaxy (https://galaxyproject.org/). This file was automatically generated using CTD2Galaxy.-->
+  <!--Proposed Tool Section: [Targeted Experiments]-->
+  <tool id="PrecursorIonSelector" name="PrecursorIonSelector" version="2.0.0">
+    <description>PrecursorIonSelector</description>
+    <macros>
+      <token name="@EXECUTABLE@">PrecursorIonSelector</token>
+      <import>macros.xml</import>
+    </macros>
+    <expand macro="references"/>
+    <expand macro="stdio"/>
+    <expand macro="requirements"/>
+    <command>PrecursorIonSelector
+
+#if $param_in:
+  -in $param_in
+#end if
+#if $param_out:
+  -out $param_out
+#end if
+#if $param_next_feat:
+  -next_feat $param_next_feat
+#end if
+#if $param_ids:
+  -ids $param_ids
+#end if
+#if $param_num_precursors:
+  -num_precursors $param_num_precursors
+#end if
+#if $param_raw_data:
+  -raw_data $param_raw_data
+#end if
+#if $param_load_preprocessing:
+  -load_preprocessing
+#end if
+#if $param_store_preprocessing:
+  -store_preprocessing
+#end if
+#if $param_simulation:
+  -simulation
+#end if
+#if $param_sim_results:
+  -sim_results     &quot;$param_sim_results&quot;
+#end if
+#if $param_db_path:
+  -db_path $param_db_path
+#end if
+#if $param_rt_model:
+  -rt_model     &quot;$param_rt_model&quot;
+#end if
+#if $param_dt_model:
+  -dt_model     &quot;$param_dt_model&quot;
+#end if
+
+#if $rep_param_fixed_modifications:
+-fixed_modifications
+  #for token in $rep_param_fixed_modifications:
+    #if &quot; &quot; in str(token):
+      &quot;$token.param_fixed_modifications&quot;
+    #else
+      $token.param_fixed_modifications
+    #end if
+  #end for
+#end if
+-threads \${GALAXY_SLOTS:-24}
+#if $param_algorithm_type:
+  -algorithm:type
+  #if &quot; &quot; in str($param_algorithm_type):
+    &quot;$param_algorithm_type&quot;
+  #else
+    $param_algorithm_type
+  #end if
+#end if
+#if $param_algorithm_max_iteration:
+  -algorithm:max_iteration $param_algorithm_max_iteration
+#end if
+#if $param_algorithm_rt_bin_capacity:
+  -algorithm:rt_bin_capacity $param_algorithm_rt_bin_capacity
+#end if
+#if $param_algorithm_step_size:
+  -algorithm:step_size $param_algorithm_step_size
+#end if
+#if $param_algorithm_peptide_min_prob:
+  -algorithm:peptide_min_prob $param_algorithm_peptide_min_prob
+#end if
+#if $param_algorithm_sequential_spectrum_order:
+  -algorithm:sequential_spectrum_order
+#end if
+#if $param_algorithm_MIPFormulation_thresholds_min_protein_probability:
+  -algorithm:MIPFormulation:thresholds:min_protein_probability $param_algorithm_MIPFormulation_thresholds_min_protein_probability
+#end if
+#if $param_algorithm_MIPFormulation_thresholds_min_protein_id_probability:
+  -algorithm:MIPFormulation:thresholds:min_protein_id_probability $param_algorithm_MIPFormulation_thresholds_min_protein_id_probability
+#end if
+#if $param_algorithm_MIPFormulation_thresholds_min_pt_weight:
+  -algorithm:MIPFormulation:thresholds:min_pt_weight $param_algorithm_MIPFormulation_thresholds_min_pt_weight
+#end if
+#if $param_algorithm_MIPFormulation_thresholds_min_mz:
+  -algorithm:MIPFormulation:thresholds:min_mz $param_algorithm_MIPFormulation_thresholds_min_mz
+#end if
+#if $param_algorithm_MIPFormulation_thresholds_max_mz:
+  -algorithm:MIPFormulation:thresholds:max_mz $param_algorithm_MIPFormulation_thresholds_max_mz
+#end if
+#if $param_algorithm_MIPFormulation_thresholds_min_pred_pep_prob:
+  -algorithm:MIPFormulation:thresholds:min_pred_pep_prob $param_algorithm_MIPFormulation_thresholds_min_pred_pep_prob
+#end if
+#if $param_algorithm_MIPFormulation_thresholds_min_rt_weight:
+  -algorithm:MIPFormulation:thresholds:min_rt_weight $param_algorithm_MIPFormulation_thresholds_min_rt_weight
+#end if
+#if $param_algorithm_MIPFormulation_thresholds_use_peptide_rule:
+  -algorithm:MIPFormulation:thresholds:use_peptide_rule
+#end if
+#if $param_algorithm_MIPFormulation_thresholds_min_peptide_ids:
+  -algorithm:MIPFormulation:thresholds:min_peptide_ids $param_algorithm_MIPFormulation_thresholds_min_peptide_ids
+#end if
+#if $param_algorithm_MIPFormulation_thresholds_min_peptide_probability:
+  -algorithm:MIPFormulation:thresholds:min_peptide_probability $param_algorithm_MIPFormulation_thresholds_min_peptide_probability
+#end if
+#if $param_algorithm_MIPFormulation_combined_ilp_k1:
+  -algorithm:MIPFormulation:combined_ilp:k1 $param_algorithm_MIPFormulation_combined_ilp_k1
+#end if
+#if $param_algorithm_MIPFormulation_combined_ilp_k2:
+  -algorithm:MIPFormulation:combined_ilp:k2 $param_algorithm_MIPFormulation_combined_ilp_k2
+#end if
+#if $param_algorithm_MIPFormulation_combined_ilp_k3:
+  -algorithm:MIPFormulation:combined_ilp:k3 $param_algorithm_MIPFormulation_combined_ilp_k3
+#end if
+#if $param_algorithm_MIPFormulation_combined_ilp_scale_matching_probs:
+  -algorithm:MIPFormulation:combined_ilp:scale_matching_probs
+#end if
+#if $param_algorithm_MIPFormulation_feature_based_no_intensity_normalization:
+  -algorithm:MIPFormulation:feature_based:no_intensity_normalization
+#end if
+#if $param_algorithm_MIPFormulation_feature_based_max_number_precursors_per_feature:
+  -algorithm:MIPFormulation:feature_based:max_number_precursors_per_feature $param_algorithm_MIPFormulation_feature_based_max_number_precursors_per_feature
+#end if
+#if $param_algorithm_Preprocessing_precursor_mass_tolerance:
+  -algorithm:Preprocessing:precursor_mass_tolerance $param_algorithm_Preprocessing_precursor_mass_tolerance
+#end if
+#if $param_algorithm_Preprocessing_precursor_mass_tolerance_unit:
+  -algorithm:Preprocessing:precursor_mass_tolerance_unit
+  #if &quot; &quot; in str($param_algorithm_Preprocessing_precursor_mass_tolerance_unit):
+    &quot;$param_algorithm_Preprocessing_precursor_mass_tolerance_unit&quot;
+  #else
+    $param_algorithm_Preprocessing_precursor_mass_tolerance_unit
+  #end if
+#end if
+#if $param_algorithm_Preprocessing_preprocessed_db_path:
+  -algorithm:Preprocessing:preprocessed_db_path     &quot;$param_algorithm_Preprocessing_preprocessed_db_path&quot;
+#end if
+#if $param_algorithm_Preprocessing_preprocessed_db_pred_rt_path:
+  -algorithm:Preprocessing:preprocessed_db_pred_rt_path     &quot;$param_algorithm_Preprocessing_preprocessed_db_pred_rt_path&quot;
+#end if
+#if $param_algorithm_Preprocessing_preprocessed_db_pred_dt_path:
+  -algorithm:Preprocessing:preprocessed_db_pred_dt_path     &quot;$param_algorithm_Preprocessing_preprocessed_db_pred_dt_path&quot;
+#end if
+#if $param_algorithm_Preprocessing_max_peptides_per_run:
+  -algorithm:Preprocessing:max_peptides_per_run $param_algorithm_Preprocessing_max_peptides_per_run
+#end if
+#if $param_algorithm_Preprocessing_missed_cleavages:
+  -algorithm:Preprocessing:missed_cleavages $param_algorithm_Preprocessing_missed_cleavages
+#end if
+#if $param_algorithm_Preprocessing_taxonomy:
+  -algorithm:Preprocessing:taxonomy     &quot;$param_algorithm_Preprocessing_taxonomy&quot;
+#end if
+#if $param_algorithm_Preprocessing_tmp_dir:
+  -algorithm:Preprocessing:tmp_dir     &quot;$param_algorithm_Preprocessing_tmp_dir&quot;
+#end if
+#if $param_algorithm_Preprocessing_store_peptide_sequences:
+  -algorithm:Preprocessing:store_peptide_sequences     &quot;$param_algorithm_Preprocessing_store_peptide_sequences&quot;
+#end if
+#if $param_algorithm_Preprocessing_rt_settings_min_rt:
+  -algorithm:Preprocessing:rt_settings:min_rt $param_algorithm_Preprocessing_rt_settings_min_rt
+#end if
+#if $param_algorithm_Preprocessing_rt_settings_max_rt:
+  -algorithm:Preprocessing:rt_settings:max_rt $param_algorithm_Preprocessing_rt_settings_max_rt
+#end if
+#if $param_algorithm_Preprocessing_rt_settings_rt_step_size:
+  -algorithm:Preprocessing:rt_settings:rt_step_size $param_algorithm_Preprocessing_rt_settings_rt_step_size
+#end if
+#if $param_algorithm_Preprocessing_rt_settings_gauss_mean:
+  -algorithm:Preprocessing:rt_settings:gauss_mean $param_algorithm_Preprocessing_rt_settings_gauss_mean
+#end if
+#if $param_algorithm_Preprocessing_rt_settings_gauss_sigma:
+  -algorithm:Preprocessing:rt_settings:gauss_sigma $param_algorithm_Preprocessing_rt_settings_gauss_sigma
+#end if
+#if $adv_opts.adv_opts_selector=='advanced':
+    #if $adv_opts.param_solver:
+  -solver
+  #if &quot; &quot; in str($adv_opts.param_solver):
+    &quot;$adv_opts.param_solver&quot;
+  #else
+    $adv_opts.param_solver
+  #end if
+#end if
+    #if $adv_opts.param_force:
+  -force
+#end if
+#end if
+</command>
+    <inputs>
+      <param format="xml" help="(-in) " label="Input feature map file (featureXML)" name="param_in" optional="False" type="data"/>
+      <param format="xml" help="(-ids) " label="file containing results of identification" name="param_ids" optional="False" type="data"/>
+      <param help="(-num_precursors) " label="number of precursors to be selected" name="param_num_precursors" type="integer" value="1"/>
+      <param format="mzml" help="(-raw_data) " label="Input profile data" name="param_raw_data" optional="True" type="data"/>
+      <param checked="false" falsevalue="" help="(-load_preprocessing) " label="The preprocessed db is loaded from file, not calculated" name="param_load_preprocessing" optional="True" truevalue="-load_preprocessing" type="boolean"/>
+      <param checked="false" falsevalue="" help="(-store_preprocessing) " label="The preprocessed db is stored" name="param_store_preprocessing" optional="True" truevalue="-store_preprocessing" type="boolean"/>
+      <param checked="false" falsevalue="" help="(-simulation) " label="Simulate the whole LC-MS/MS run" name="param_simulation" optional="True" truevalue="-simulation" type="boolean"/>
+      <param help="(-sim_results) " label="File containing the results of the simulation run" name="param_sim_results" size="30" type="text">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param format="fasta" help="(-db_path) " label="db file" name="param_db_path" optional="True" type="data"/>
+      <param help="(-rt_model) " label="SVM Model for RTPredict" name="param_rt_model" size="30" type="text">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-dt_model) " label="SVM Model for PTPredict" name="param_dt_model" size="30" type="text">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <repeat min="0" name="rep_param_fixed_modifications" title="param_fixed_modifications">
+        <param help="(-fixed_modifications) " label="the modifications i.e. Carboxymethyl (C)" name="param_fixed_modifications" size="30" type="text">
+          <sanitizer>
+            <valid initial="string.printable">
+              <remove value="'"/>
+              <remove value="&quot;"/>
+            </valid>
+          </sanitizer>
+        </param>
+      </repeat>
+      <param help="(-type) " label="Strategy for precursor ion selection" name="param_algorithm_type" optional="True" type="select" value="IPS">
+        <option value="ILP_IPS">ILP_IPS</option>
+        <option value="IPS">IPS</option>
+        <option value="SPS">SPS</option>
+        <option value="Upshift">Upshift</option>
+        <option value="Downshift">Downshift</option>
+        <option value="DEX">DEX</option>
+      </param>
+      <param help="(-max_iteration) " label="Maximal number of iterations" min="1" name="param_algorithm_max_iteration" optional="True" type="integer" value="100"/>
+      <param help="(-rt_bin_capacity) " label="Maximal number of precursors per rt bin" min="1" name="param_algorithm_rt_bin_capacity" optional="True" type="integer" value="10"/>
+      <param help="(-step_size) " label="Maximal number of precursors per iteration" min="1" name="param_algorithm_step_size" optional="True" type="integer" value="1"/>
+      <param help="(-peptide_min_prob) " label="Minimal peptide probability" name="param_algorithm_peptide_min_prob" type="float" value="0.2"/>
+      <param checked="false" falsevalue="" help="(-sequential_spectrum_order) " label="If true, precursors are selected sequentially with respect to their RT" name="param_algorithm_sequential_spectrum_order" optional="True" truevalue="-algorithm:sequential_spectrum_order" type="boolean"/>
+      <param help="(-min_protein_probability) " label="Minimal protein probability for a protein to be considered in the ILP" max="1.0" min="0.0" name="param_algorithm_MIPFormulation_thresholds_min_protein_probability" optional="True" type="float" value="0.2"/>
+      <param help="(-min_protein_id_probability) " label="Minimal protein probability for a protein to be considered identified" max="1.0" min="0.0" name="param_algorithm_MIPFormulation_thresholds_min_protein_id_probability" optional="True" type="float" value="0.95"/>
+      <param help="(-min_pt_weight) " label="Minimal pt weight of a precurso" max="1.0" min="0.0" name="param_algorithm_MIPFormulation_thresholds_min_pt_weight" optional="True" type="float" value="0.5"/>
+      <param help="(-min_mz) " label="Minimal mz to be considered in protein based LP formulation" min="0.0" name="param_algorithm_MIPFormulation_thresholds_min_mz" optional="True" type="float" value="500.0"/>
+      <param help="(-max_mz) " label="Minimal mz to be considered in protein based LP formulation" min="0.0" name="param_algorithm_MIPFormulation_thresholds_max_mz" optional="True" type="float" value="5000.0"/>
+      <param help="(-min_pred_pep_prob) " label="Minimal predicted peptide probability of a precurso" max="1.0" min="0.0" name="param_algorithm_MIPFormulation_thresholds_min_pred_pep_prob" optional="True" type="float" value="0.5"/>
+      <param help="(-min_rt_weight) " label="Minimal rt weight of a precurso" max="1.0" min="0.0" name="param_algorithm_MIPFormulation_thresholds_min_rt_weight" optional="True" type="float" value="0.5"/>
+      <param checked="false" falsevalue="" help="(-use_peptide_rule) " label="Use peptide rule instead of minimal protein id probability" name="param_algorithm_MIPFormulation_thresholds_use_peptide_rule" optional="True" truevalue="-algorithm:MIPFormulation:thresholds:use_peptide_rule" type="boolean"/>
+      <param help="(-min_peptide_ids) " label="If use_peptide_rule is true, this parameter sets the minimal number of peptide ids for a protein id" min="1" name="param_algorithm_MIPFormulation_thresholds_min_peptide_ids" optional="True" type="integer" value="2"/>
+      <param help="(-min_peptide_probability) " label="If use_peptide_rule is true, this parameter sets the minimal probability for a peptide to be safely identified" max="1.0" min="0.0" name="param_algorithm_MIPFormulation_thresholds_min_peptide_probability" optional="True" type="float" value="0.95"/>
+      <param help="(-k1) " label="combined ilp: weight for z_i" min="0.0" name="param_algorithm_MIPFormulation_combined_ilp_k1" optional="True" type="float" value="0.2"/>
+      <param help="(-k2) " label="combined ilp: weight for x_j,s*int_j,s" min="0.0" name="param_algorithm_MIPFormulation_combined_ilp_k2" optional="True" type="float" value="0.2"/>
+      <param help="(-k3) " label="combined ilp: weight for -x_j,s*w_j,s" min="0.0" name="param_algorithm_MIPFormulation_combined_ilp_k3" optional="True" type="float" value="0.4"/>
+      <param checked="true" falsevalue="" help="(-scale_matching_probs) " label="flag if detectability * rt_weight shall be scaled to cover all [0,1]" name="param_algorithm_MIPFormulation_combined_ilp_scale_matching_probs" optional="True" truevalue="-algorithm:MIPFormulation:combined_ilp:scale_matching_probs" type="boolean"/>
+      <param checked="false" falsevalue="" help="(-no_intensity_normalization) This is done for each feature separately, so that the feature's maximal intensity in a spectrum is set to 1" label="Flag indicating if intensities shall be scaled to be in [0,1]" name="param_algorithm_MIPFormulation_feature_based_no_intensity_normalization" optional="True" truevalue="-algorithm:MIPFormulation:feature_based:no_intensity_normalization" type="boolean"/>
+      <param help="(-max_number_precursors_per_feature) " label="The maximal number of precursors per feature" min="1" name="param_algorithm_MIPFormulation_feature_based_max_number_precursors_per_feature" optional="True" type="integer" value="1"/>
+      <param help="(-precursor_mass_tolerance) " label="Precursor mass tolerance which is used to query the peptide database for peptides" min="0.0" name="param_algorithm_Preprocessing_precursor_mass_tolerance" optional="True" type="float" value="10.0"/>
+      <param help="(-precursor_mass_tolerance_unit) " label="Precursor mass tolerance unit" name="param_algorithm_Preprocessing_precursor_mass_tolerance_unit" optional="True" type="select" value="ppm">
+        <option value="ppm">ppm</option>
+        <option value="Da">Da</option>
+      </param>
+      <param help="(-preprocessed_db_path) " label="Path where the preprocessed database should be stored" name="param_algorithm_Preprocessing_preprocessed_db_path" size="30" type="text">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-preprocessed_db_pred_rt_path) " label="Path where the predicted rts of the preprocessed database should be stored" name="param_algorithm_Preprocessing_preprocessed_db_pred_rt_path" size="30" type="text">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-preprocessed_db_pred_dt_path) " label="Path where the predicted rts of the preprocessed database should be stored" name="param_algorithm_Preprocessing_preprocessed_db_pred_dt_path" size="30" type="text">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-max_peptides_per_run) " label="Number of peptides for that the pt and rt are parallely predicted" min="1" name="param_algorithm_Preprocessing_max_peptides_per_run" optional="True" type="integer" value="100000"/>
+      <param help="(-missed_cleavages) " label="Number of allowed missed cleavages" min="0" name="param_algorithm_Preprocessing_missed_cleavages" optional="True" type="integer" value="1"/>
+      <param help="(-taxonomy) " label="Taxonomy" name="param_algorithm_Preprocessing_taxonomy" size="30" type="text">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-tmp_dir) " label="Absolute path to tmp data directory used to store files needed for rt and dt prediction" name="param_algorithm_Preprocessing_tmp_dir" size="30" type="text">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-store_peptide_sequences) " label="Flag if peptide sequences should be stored" name="param_algorithm_Preprocessing_store_peptide_sequences" size="30" type="text" value="false">
+        <sanitizer>
+          <valid initial="string.printable">
+            <remove value="'"/>
+            <remove value="&quot;"/>
+          </valid>
+        </sanitizer>
+      </param>
+      <param help="(-min_rt) " label="Minimal RT in the experiment (in seconds)" min="1.0" name="param_algorithm_Preprocessing_rt_settings_min_rt" optional="True" type="float" value="960.0"/>
+      <param help="(-max_rt) " label="Maximal RT in the experiment (in seconds)" name="param_algorithm_Preprocessing_rt_settings_max_rt" type="float" value="3840.0"/>
+      <param help="(-rt_step_size) " label="Time between two consecutive spectra (in seconds)" name="param_algorithm_Preprocessing_rt_settings_rt_step_size" type="float" value="30.0"/>
+      <param help="(-gauss_mean) " label="mean of the gauss curve" name="param_algorithm_Preprocessing_rt_settings_gauss_mean" type="float" value="-1.0"/>
+      <param help="(-gauss_sigma) " label="std of the gauss curve" name="param_algorithm_Preprocessing_rt_settings_gauss_sigma" type="float" value="3.0"/>
+      <expand macro="advanced_options">
+        <param help="(-solver) " label="LP solver type" name="param_solver" optional="True" type="select" value="GLPK">
+          <option value="GLPK">GLPK</option>
+          <option value="COINOR">COINOR</option>
+        </param>
+        <param checked="false" falsevalue="" help="(-force) " label="Overwrite tool specific checks" name="param_force" optional="True" truevalue="-force" type="boolean"/>
+      </expand>
+    </inputs>
+    <outputs>
+      <data format="xml" name="param_out"/>
+      <data format="xml" name="param_next_feat"/>
+    </outputs>
+    <help>PrecursorIonSelector
+
+
+For more information, visit http://ftp.mi.fu-berlin.de/OpenMS/release-documentation/html/TOPP_PrecursorIonSelector.html</help>
+  </tool>

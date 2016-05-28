@@ -16,12 +16,12 @@ Inputfiles, workflowsteps and results are stored in a history where you can view
 It is possible to share workflows and histories with other users or make the public available.
 Saved workflows can be used with new input files or just to rerun an analyses which ensures repeatability.
 
-
+===============
 
 Getting Started
 ===============
 
-ChemicalToolBoX can be installed on all common Unix systems. 
+BlockClust can be installed on all common Unix systems. 
 However, it is developed on Linux and I don't have access to OS X. You are welcome to help improving this documentation, just contact_ me.
 
 For any additional information, especially cluster configuration or general Galaxy_ questions, 
@@ -139,51 +139,22 @@ BlockClust will automatically download and compile all requirements,
 like EDeN, samtools and so on. It can take up to 1-2 hours.
 
 
-Installation via Galaxy API (recommended)
-=========================================
-
-- Generate an `API Key`_
-- Run the installation script::
-	
-	python ./scripts/api/install_tool_shed_repositories.py --api YOUR_API_KEY -l http://localhost:8080 --url http://toolshed.g2.bx.psu.edu/ -o rnateam -r e9b2400cc569 --name blockclust_workflow --tool-deps --repository-deps --panel-section-name ChemicalToolBoX
-
-The -r argument specifies the version of ChemicalToolBoX. You can get the latest revsion number from the 
-`test tool shed`_ or with the following command::
-
-	hg identify http://toolshed.g2.bx.psu.edu/repos/bgruening/chemicaltoolbox
-
-You can watch the installation status under: Top Panel → Admin → Manage installed tool shed repositories
-
-
-.. _API Key: http://wiki.galaxyproject.org/Admin/API#Generate_the_Admin_Account_API_Key
-.. _`test tool shed`: http://testtoolshed.g2.bx.psu.edu/
-
-
 Installation via webbrowser
 ===========================
 
 - go to the `admin page`_
 - select *Search and browse tool sheds*
 - Galaxy test tool shed > Sequence Analysis  > blockclust_workflow
-- install chemicaltoolbox
+- install
 
 .. _admin page: http://localhost:8080/admin
-
 
 
 ===============
 Troubleshooting
 ===============
-
-If you have any trouble or the installation did not finish properly, do not hesitate to contact me. However, if the 
-installation fails during the Galaxy installation, you can have a look at the `Galaxy wiki`_. If the ChemicalToolBoX installation fails, 
-you can try to run::
-
-	python ./scripts/api/repair_tool_shed_repository.py --api YOUR_API_KEY -l http://localhost:8080 --url http://toolshed.g2.bx.psu.edu/ -o rnateam -r e9b2400cc569 --name blockclust_workflow
-
-That will rerun all failed installation routines. Alternatively, you can navigate to the ChemicalToolBoX repository in 
-your browser and repair manually: 
-Top Panel → Admin → Manage installed tool shed repositories → chemicaltoolbox → Repository Actions → Repair repository
+You can navigate to the blockclust_workflow repository in your browser and repair manually: 
+Top Panel → Admin → Manage installed tool shed repositories → blockclust_workflow → Repository Actions → Repair repository
 
 ------
 
@@ -210,16 +181,11 @@ We highly recommend to use PostgreSQL for any kind of production system.
 Workflows
 =========
 
-An example workflow is located in the `Tool Shed`::
+The BlockClust workflow is located in the `Tool Shed`::
 
-	  http://testtoolshed.g2.bx.psu.edu/view/rnateam/blockclust_workflow
+	  http://toolshed.g2.bx.psu.edu/view/rnateam/blockclust_workflow
 
-You can install the workflow with the API::
-
-	python ./scripts/api/install_tool_shed_repositories.py --api YOUR_API_KEY -l http://localhost:8080 --url http://toolshed.g2.bx.psu.edu/ -o rnateam -r e9b2400cc569 --name blockclust_workflow --tool-deps --repository-deps --panel-section-name BlockClust
-
-or as described above via webbrowser. You have now successfully installed the workflow, 
-to import it to all your users you need to go to the admin panel, choose the worklow and import it.
+To import successfully installed the workflow to all your users you need to go to the admin panel, choose the worklow and import it.
 For more information have a look at the Galaxy wiki::
 
 	http://wiki.galaxyproject.org/ToolShedWorkflowSharing#Finding_workflows_in_tool_shed_repositories
@@ -233,33 +199,6 @@ We highly recommend to use PostgreSQL for any kind of production system.
 Sample Data
 ===========
 
-As an example, we will use the first public assembly of the 2011 Shiga-toxin
-producing *Escherichia coli* O104:H4 outbreak in Germany. This was part of the
-open-source crowd-sourcing analysis described in Rohde et al. (2011) and here:
-https://github.com/ehec-outbreak-crowdsourced/BGI-data-analysis/wiki
-
-You can upload this assembly directly into Galaxy using the "Upload File" tool
-with either of these URLs - Galaxy should recognise this is a FASTA file with
-3,057 sequences:
-
-* http://static.xbase.ac.uk/files/results/nick/TY2482/TY2482.fasta.txt
-* https://github.com/ehec-outbreak-crowdsourced/BGI-data-analysis/blob/master/strains/TY2482/seqProject/BGI/assemblies/NickLoman/TY2482.fasta.txt
-
-This FASTA file ``TY2482.fasta.txt`` was the initial TY-2482 strain assembled
-by Nick Loman from 5 runs of Ion Torrent data released by the BGI, using the
-MIRA 3.2 assembler. It was initially released via his blog,
-http://pathogenomics.bham.ac.uk/blog/2011/06/ehec-genome-assembly/
-
-We will also need a training set of known *E. coli* genes, for example the
-model strain *Escherichia coli* str. K-12 substr. MG1655 which is well
-annotated. You can upload the NCBI FASTA file ``NC_000913.ffn`` of the
-gene nucleotide sequences directly into Galaxy via this URL, which Galaxy
-should recognise as a FASTA file with 4,321 sequences:
-
-* ftp://ftp.ncbi.nlm.nih.gov/genomes/Bacteria/Escherichia_coli_K_12_substr__MG1655_uid57779/NC_000913.ffn
-
-Then run the workflow, which should produce 2,333 predicted genes for the
-TY2482 assembly (two FASTA files, nucleotide and protein sequences).
 
 
 Citation
@@ -269,17 +208,13 @@ If you use this workflow directly, or a derivative of it, or the associated
 wrappers for Galaxy, in work leading to a scientific publication,
 please cite:
 
-P. Videm  at al...
+Pavankumar Videm, Dominic Rose, Fabrizio Costa, and Rolf Backofen. "BlockClust: efficient clustering and classification of non-coding RNAs from short read RNA-seq profiles." Bioinformatics 30, no. 12 (2014): i274-i282.
 
 
 
 Additional References
 =====================
 
-Rohde, H., Qin, J., Cui, Y., Li, D., Loman, N.J., et al. (2011)
-Open-source genomic analysis of shiga-toxin-producing E. coli O104:H4.
-New England Journal of Medicine 365, 718-724.
-http://dx.doi.org/10.1056/NEJMoa1107643
 
 
 Availability
@@ -287,7 +222,7 @@ Availability
 
 This workflow is available on the main Galaxy Tool Shed:
 
- http://testtoolshed.g2.bx.psu.edu/view/rnateam/blockclust_workflow 
+ http://toolshed.g2.bx.psu.edu/view/rnateam/blockclust_workflow 
 
 Development is being done on github:
 
@@ -301,7 +236,6 @@ These dependencies should be resolved automatically via the Galaxy Tool Shed:
 
 * http://testtoolshed.g2.bx.psu.edu/view/iuc/package_samtools_0_1_19 
 * http://testtoolshed.g2.bx.psu.edu/view/iuc/package_r_3_0_1
-* http://testtoolshed.g2.bx.psu.edu/view/rnateam/package_segemehl_0_1_6 
 * http://testtoolshed.g2.bx.psu.edu/view/iuc/msa_datatypes 
 * http://testtoolshed.g2.bx.psu.edu/view/iuc/package_infernal_1_1rc4 
 * http://testtoolshed.g2.bx.psu.edu/view/rnateam/blockbuster 

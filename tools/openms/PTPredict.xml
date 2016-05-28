@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!--This is a configuration file for the integration of a tools into Galaxy (https://galaxyproject.org/). This file was automatically generated using CTD2Galaxy.-->
+  <!--Proposed Tool Section: [Peptide property prediction]-->
+  <tool id="PTPredict" name="PTPredict" version="2.0.0">
+    <description>predicts the likelihood of peptides to be proteotypic via svm_model which is trained by PTModel</description>
+    <macros>
+      <token name="@EXECUTABLE@">PTPredict</token>
+      <import>macros.xml</import>
+    </macros>
+    <expand macro="references"/>
+    <expand macro="stdio"/>
+    <expand macro="requirements"/>
+    <command>PTPredict
+
+#if $param_in:
+  -in $param_in
+#end if
+#if $param_out:
+  -out $param_out
+#end if
+#if $param_svm_model:
+  -svm_model $param_svm_model
+#end if
+#if $param_max_number_of_peptides:
+  -max_number_of_peptides $param_max_number_of_peptides
+#end if
+-threads \${GALAXY_SLOTS:-24}
+#if $adv_opts.adv_opts_selector=='advanced':
+    #if $adv_opts.param_force:
+  -force
+#end if
+#end if
+</command>
+    <inputs>
+      <param format="xml" help="(-in) " label="input file" name="param_in" optional="False" type="data"/>
+      <param format="txt" help="(-svm_model) " label="svm model in libsvm format (can be produced by PTModel)" name="param_svm_model" optional="False" type="data"/>
+      <param help="(-max_number_of_peptides) &lt;br&gt;" label="the maximum number of peptides considered at once (bigger number will lead to faster results but needs more memory)" name="param_max_number_of_peptides" type="integer" value="100000"/>
+      <expand macro="advanced_options">
+        <param checked="false" falsevalue="" help="(-force) " label="Overwrite tool specific checks" name="param_force" optional="True" truevalue="-force" type="boolean"/>
+      </expand>
+    </inputs>
+    <outputs>
+      <data format="xml" name="param_out"/>
+    </outputs>
+    <help>predicts the likelihood of peptides to be proteotypic via svm_model which is trained by PTModel
+
+
+For more information, visit http://ftp.mi.fu-berlin.de/OpenMS/release-documentation/html/TOPP_PTPredict.html</help>
+  </tool>

@@ -4,21 +4,23 @@
         <requirement type="package" version="2.3.2">openbabel</requirement>
     </requirements>
     <command interpreter="python">
+<![CDATA[
 
     subsearch.py
         -i $query
         --iformat "${query.ext}"
-        --fastsearch-index "${os.path.join($fastsearch.extra_files_path,'molecule.fs')}"
+        --fastsearch-index "${os.path.join($fastsearch.files_path,'molecule.fs')}"
         -o "${outfile}"
         --oformat $oformat
         --max-candidates $max_candidates
         --processors "\${GALAXY_SLOTS:-12}"
 
+]]>
     </command>
     <inputs>
         <param name="query" type='data' format="tabular,smi,sdf,inchi,text" label="query"/>
         <param name="fastsearch" type='data' format="obfs" label="OpenBabel Fastsearch Index"/>
-        <param name="max_candidates" size="6" type="integer" value="4000" label="The maximum number of candidates"/>
+        <param name="max_candidates" type="integer" value="4000" label="The maximum number of candidates"/>
         <param name='oformat' type='select' format='text' label="Output format.">
             <option value='smi'>SMILES</option>
             <option value='inchi'>InChI</option>
@@ -42,6 +44,7 @@
         </test>
     </tests>
     <help>
+<![CDATA[
 
 .. class:: infomark
 
@@ -69,5 +72,6 @@ SMILES or SMARTS patterns are possible. SD- and InChI files are converted to SMI
 
 .. _Open Babel: http://openbabel.org/wiki/Main_Page
 
+]]>
     </help>
 </tool>

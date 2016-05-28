@@ -39,6 +39,9 @@ By combinating the various tools many more powerful applications can be designed
 ChemicalToolBox is based on open-source software, web-accessible, freely available, and easily expandable. 
 It can be downloaded and easily deployed locally or on a large scale cluster.
 
+CTB is available as a public test instance @ http://ctb.pharmaceutical-bioinformatics.org.
+
+
 .. _About Galaxy:
 
 ======
@@ -167,31 +170,30 @@ Galaxy installation
 
 1. Clone the latest `Galaxy platform`_::
 
-	hg clone https://bitbucket.org/galaxy/galaxy-central/
+	git clone https://github.com/galaxyproject/galaxy.git
 
 .. _Galaxy platform: http://wiki.galaxyproject.org/Admin/Get%20Galaxy
 
-2. Navigate to the galaxy-central folder and update it::
+2. Navigate to the galaxy folder and update it::
 	
-	cd ~/galaxy-central
-	hg pull
-	hg update
-   
+	cd ~/galaxy
+	git pull
+
    This step is not necessary if you have a fresh checkout. Anyway, it is good to know ;)
 
 3. Create folders for toolshed and dependencies::
 
 	mkdir ~/shed_tools
-	mkdir ~/galaxy-central/tool_deps
+	mkdir ~/galaxy/tool_deps
 
 4. Create configuration file::
 
-	cp ~/galaxy-central/universe_wsgi.ini.sample ~/galaxy-central/universe_wsgi.ini
+	cp ~/galaxy/config/galaxy.ini.sample ~/galaxy/config/galaxy.ini
 
-5. Open universe_wsgi.ini and change the dependencies directory::
+5. Open config/galaxy.ini and change the dependencies directory::
 
-	LINUX: gedit ~/galaxy-central/universe_wsgi.ini
-	OS X: open -a TextEdit ~/galaxy-central/universe_wsgi.ini
+	LINUX: gedit ~/galaxy/config/galaxy.ini
+	OS X: open -a TextEdit ~/galaxy/config/galaxy.ini
 
 6. Search for ``tool_dependency_dir = None`` and change it to ``tool_dependency_dir = ./tool_deps``, remove the ``#`` if needed
 
@@ -218,7 +220,7 @@ Tool Shed configuration
 
 - Register a new user account in your Galaxy instance: Top Panel → User → Register
 - Become an admin
-	- open ``universe_wsgi.ini`` in your favourite text editor (gedit universe_wsgi.ini)
+	- open ``config/galaxy.ini`` in your favourite text editor (gedit config/galaxy.ini)
 	- search ``admin_users = None`` and change it to ``admin_users = EMAIL_ADDRESS`` (your Galaxy Username)
 	- remove the ``#`` if needed
 - restart Galaxy
@@ -243,12 +245,7 @@ Installation via Galaxy API (recommended)
 - Generate an `API Key`_
 - Run the installation script::
 	
-	python ./scripts/api/install_tool_shed_repositories.py --api YOUR_API_KEY -l http://localhost:8080 --url http://toolshed.g2.bx.psu.edu/ -o bgruening -r 30ae0e5218b4 --name chemicaltoolbox --tool-deps --repository-deps --panel-section-name ChemicalToolBoX
-
-The -r argument specifies the version of ChemicalToolBoX. You can get the latest revsion number from the 
-`test tool shed`_ or with the following command::
-
-	hg identify http://toolshed.g2.bx.psu.edu/repos/bgruening/chemicaltoolbox
+	python ./scripts/api/install_tool_shed_repositories.py --api YOUR_API_KEY -l http://localhost:8080 --url http://toolshed.g2.bx.psu.edu/ -o bgruening --name chemicaltoolbox --tool-deps --repository-deps --panel-section-name ChemicalToolBoX
 
 You can watch the installation status under: Top Panel → Admin → Manage installed tool shed repositories
 
@@ -268,8 +265,8 @@ Installation via webbrowser
 .. _admin page: http://localhost:8080/admin
 
 
-Addiational Notes
-~~~~~~~~~~~~~~~~~
+Additional Notes
+~~~~~~~~~~~~~~~~
 
 You can also configure CTB to use system installed binaries, but you will loose some degree of reproducibility.
 Nevertheless, if you want to do this the recommended depencency versions are specified in a file called
@@ -302,7 +299,7 @@ On slow computers and during the compilation of large software libraries, like o
 the Tool Shed can run into a timeout and kills the installation.
 That problem is known and should be fixed in the near future.
 
-If you encouter a timeout or 'hung' during the installation you can increase the ``threadpool_kill_thread_limit`` in your universe_wsgi.ini file.
+If you encouter a timeout or 'hung' during the installation you can increase the ``threadpool_kill_thread_limit`` in your `config/galaxy.ini` file.
 
 
 ------
@@ -332,9 +329,9 @@ Jmol Editor Installation
 
 - copy the directory ``jmoleditor`` into your Galaxy Root directory ::
 
-	cp -a ~/galaxytools/chemicaltoolbox/data_source/jmoleditor/ ~/galaxy-central/
+	cp -a ~/galaxytools/chemicaltoolbox/data_source/jmoleditor/ ~/galaxy/
 
-- launch the webserver from your galaxy-central root directory ::
+- launch the webserver from your galaxy root directory ::
 
 	python -m SimpleHTTPServer &
 
@@ -491,6 +488,13 @@ We highly recommend to use PostgreSQL for any kind of production system.
 
 .. _Bug Tracker:
 
+
+Publications using CTB
+======================
+
+ * `The Purchasable Chemical Space: a Detailed Picture <http://pubs.acs.org/doi/abs/10.1021/acs.jcim.5b00116>`_
+
+
 Bug Tracker
 ===========
 Have a bug or a feature request? `Please write a new card`_. Before writing a new card, please search for existing issues.
@@ -504,4 +508,4 @@ Contributing
 We encourage you to contribute to ChemicalToolBoX! Check out our `Trello board`_ or contact us via e-mail_.
 
 .. _Trello board: https://trello.com/b/t9Wr8lSY/chemicaltoolbox
-.. _e-mail: bjoern_dot_gruening@gmail.com
+.. _e-mail: bjoern.gruening@gmail.com
